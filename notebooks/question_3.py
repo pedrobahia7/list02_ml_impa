@@ -13,6 +13,8 @@ from sklearn import svm
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+from contextlib import redirect_stdout
 
 
 def plot_digits(
@@ -38,6 +40,10 @@ def plot_digits(
             axs[i, j].axis("off")
 
 
+# Create results directory if it doesn't exist
+results_dir = "../results/"
+os.makedirs(results_dir, exist_ok=True)
+
 mnist = fetch_openml("mnist_784")  # Baixar os dados
 X, y = mnist.data.to_numpy(), mnist.target.to_numpy()
 X = X / 255  # Colocar as features em [0, 1]
@@ -49,6 +55,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 plot_digits(
     X, n_rows=2, n_cols=5, indexes=[21, 24, 16, 27, 26, 35, 13, 15, 17, 19]
 )
+plt.suptitle("Sample MNIST Digits", fontsize=16)
+plt.savefig(
+    os.path.join(results_dir, "sample_digits.png"),
+    dpi=300,
+    bbox_inches="tight",
+)
+plt.close()
 
 
 # %%
@@ -80,40 +93,42 @@ accuracy = []
 time_train = []
 time_test = []
 i = 0
-for model in models:
-    start_time = time.time()
-    model.fit(X_train, y_train)
-    end_time = time.time()
-    time_train.append(end_time - start_time)
 
-    start_time = time.time()
-    yhat = model.predict(X_test)
-    end_time = time.time()
-    time_test.append(end_time - start_time)
+# Capture training results to text file
+with open(os.path.join(results_dir, "model_performance.txt"), "w") as f:
+    with redirect_stdout(f):
+        for model in models:
+            start_time = time.time()
+            model.fit(X_train, y_train)
+            end_time = time.time()
+            time_train.append(end_time - start_time)
 
-    yhats.append(yhat)
-    accuracy.append(accuracy_score(y_true=y_test, y_pred=yhat))
-    print(
-        "model",
-        models[i].__class__.__name__,
-        "yhats:",
-        yhats[i],
-        "accuracy:",
-        accuracy[i],
-        "time_train:",
-        time_train[i],
-        "time_test:",
-        time_test[i],
-    )
-    i += 1
+            start_time = time.time()
+            yhat = model.predict(X_test)
+            end_time = time.time()
+            time_test.append(end_time - start_time)
 
+            yhats.append(yhat)
+            accuracy.append(accuracy_score(y_true=y_test, y_pred=yhat))
+            print(
+                "model",
+                models[i].__class__.__name__,
+                "accuracy:",
+                accuracy[i],
+                "time_train:",
+                time_train[i],
+                "time_test:",
+                time_test[i],
+            )
+            i += 1
 
-print(
-    "Observação: para a convergência do modelo de QDA, foi necessário adicionar um parâmetro de regularização reg_param = 0.01."
-)
-print(
-    "Além disso, os dados não foram normalizados, pois haviam sido escalonados com algoritmo semelhante ao MinMaxScaler."
-)
+        print()
+        print(
+            "Observação: para a convergência do modelo de QDA, foi necessário adicionar um parâmetro de regularização reg_param = 0.01."
+        )
+        print(
+            "Além disso, os dados não foram normalizados, pois haviam sido escalonados com algoritmo semelhante ao MinMaxScaler."
+        )
 
 # %%
 # Para cada um dos gráficos gerados pelos códigos abaixo, explique o que está sendo mostrado,
@@ -126,12 +141,24 @@ for i in range(10):
     nb_params[i] = np.exp(nb.feature_log_prob_[i])
 
 plot_digits(nb_params)
-
-print(
-    "Cada imagem representa a probabilidade dos pixeis da imagem de pertecerem à respectiva classe, sendo que valores altos indicam pixeis recorrentes para a classe."
-    "O produto entre este vetor e a entrada indicará a probabilidade da entrada ser pertencente à classe e será utilizada para classificação. A interpretação da imagem "
-    "é simples e permite a reconstituição do dígito ao qual a classe referencia."
+plt.suptitle("Naive Bayes Feature Probabilities", fontsize=16)
+plt.savefig(
+    os.path.join(results_dir, "naive_bayes_params.png"),
+    dpi=300,
+    bbox_inches="tight",
 )
+plt.close()
+
+# Save explanation to file
+with open(
+    os.path.join(results_dir, "naive_bayes_explanation.txt"), "w"
+) as f:
+    explanation = (
+        "Cada imagem representa a probabilidade dos pixeis da imagem de pertecerem à respectiva classe, sendo que valores altos indicam pixeis recorrentes para a classe."
+        "O produto entre este vetor e a entrada indicará a probabilidade da entrada ser pertencente à classe e será utilizada para classificação. A interpretação da imagem "
+        "é simples e permite a reconstituição do dígito ao qual a classe referencia."
+    )
+    f.write(explanation)
 
 # %%
 # (ii)
@@ -141,11 +168,22 @@ for i in range(10):
 
 
 plot_digits(lda_params)
-print(
-    "Cada uma das imagens é a média da respectiva classe no espaço de entrada. Essa imagem seria equivalente a uma amostra média, ponto central em relação"
-    "às demais amostras da classe. As previsões do modelo baseiam-se em uma métrica de similaridade  da entrada em relação a cada uma dessas médias. É possivel interpretar"
-    "com facilidade a classe relacionada a cada imagem."
+plt.suptitle("LDA Class Means", fontsize=16)
+plt.savefig(
+    os.path.join(results_dir, "lda_params.png"),
+    dpi=300,
+    bbox_inches="tight",
 )
+plt.close()
+
+# Save explanation to file
+with open(os.path.join(results_dir, "lda_explanation.txt"), "w") as f:
+    explanation = (
+        "Cada uma das imagens é a média da respectiva classe no espaço de entrada. Essa imagem seria equivalente a uma amostra média, ponto central em relação"
+        "às demais amostras da classe. As previsões do modelo baseiam-se em uma métrica de similaridade  da entrada em relação a cada uma dessas médias. É possivel interpretar"
+        "com facilidade a classe relacionada a cada imagem."
+    )
+    f.write(explanation)
 
 # %%
 # (iii)
@@ -154,21 +192,51 @@ for i in range(10):
     log_reg_params[i] = lr.coef_[i]
 
 plot_digits(log_reg_params)
-"A imagem representa o coeficiente da rede. Ao multiplicarmos pela entrada, teremos o logarítmo probabilidade da amostra pertencer à classe sobre a probabilidade dela pertencer "
-"à classe de referência. A imagem mostrada é a resposta do modelo a uma matriz de 1's. Isso pode ser interpretado com a contribuição de cada pixel para a probabilidade final."
-"Ainda mantemos uma interpretação válida de cada classe por meio da imagem, apesar de menos clara caso comparemos com as imagens dos modelos anteriores"
+plt.suptitle("Logistic Regression Coefficients", fontsize=16)
+plt.savefig(
+    os.path.join(results_dir, "logistic_regression_params.png"),
+    dpi=300,
+    bbox_inches="tight",
+)
+plt.close()
+
+# Save explanation to file
+with open(
+    os.path.join(results_dir, "logistic_regression_explanation.txt"), "w"
+) as f:
+    explanation = (
+        "A imagem representa o coeficiente da rede. Ao multiplicarmos pela entrada, teremos o logarítmo probabilidade da amostra pertencer à classe sobre a probabilidade dela pertencer "
+        "à classe de referência. A imagem mostrada é a resposta do modelo a uma matriz de 1's. Isso pode ser interpretado com a contribuição de cada pixel para a probabilidade final."
+        "Ainda mantemos uma interpretação válida de cada classe por meio da imagem, apesar de menos clara caso comparemos com as imagens dos modelos anteriores"
+    )
+    f.write(explanation)
 
 # %%
 # (iv)
 rf_params = rf.feature_importances_.reshape(28, 28)
 
+plt.figure(figsize=(10, 8))
 plt.axis("off")
 plt.imshow(rf_params, cmap="plasma")
+plt.title("Random Forest Feature Importances", fontsize=16)
+plt.colorbar()
+plt.savefig(
+    os.path.join(results_dir, "random_forest_feature_importance.png"),
+    dpi=300,
+    bbox_inches="tight",
+)
+plt.close()
 
-
-"A imagem representa a importância de cada pixel para o modelo, baseado ena média do decaímneto de uma métrica de impureza, no caso, o coeficiente de Gini."
-"Valores altos indicam que aquela feature foi capaz de auxiliar na distinção entre as classes. Nesse caso, perde-se a interpretação individual das classes, entretanto"
-"ainda está clara qual a região mais importante para a classificação."
+# Save explanation to file
+with open(
+    os.path.join(results_dir, "random_forest_explanation.txt"), "w"
+) as f:
+    explanation = (
+        "A imagem representa a importância de cada pixel para o modelo, baseado ena média do decaímneto de uma métrica de impureza, no caso, o coeficiente de Gini."
+        "Valores altos indicam que aquela feature foi capaz de auxiliar na distinção entre as classes. Nesse caso, perde-se a interpretação individual das classes, entretanto"
+        "ainda está clara qual a região mais importante para a classificação."
+    )
+    f.write(explanation)
 
 # %%
 # (v) a-
@@ -187,12 +255,27 @@ plot_digits(
     img_shape=(28, 28),
     labels=None,
 )
-
-print(
-    "Cada imagem representa os pesos que ligam a entrada a cada um dos neurõnios da camada oculta. Eles são a transformação linear da entrada antes da "
-    "primeira função de ativaçãoe podem ser interpretados como parte de uma engenharia de feature. A interpretabilidade já se perdeu completamente,"
-    "tanto pela alta quantidade de neurônios quanto pela dificuldade de encontrar valor semântico em cada transformação."
+plt.suptitle("Neural Network - Input to Hidden Layer Weights", fontsize=20)
+plt.savefig(
+    os.path.join(results_dir, "neural_network_input_hidden_weights.png"),
+    dpi=300,
+    bbox_inches="tight",
 )
+plt.close()
+
+# Save explanation to file
+with open(
+    os.path.join(
+        results_dir, "neural_network_input_hidden_explanation.txt"
+    ),
+    "w",
+) as f:
+    explanation = (
+        "Cada imagem representa os pesos que ligam a entrada a cada um dos neurõnios da camada oculta. Eles são a transformação linear da entrada antes da "
+        "primeira função de ativaçãoe podem ser interpretados como parte de uma engenharia de feature. A interpretabilidade já se perdeu completamente,"
+        "tanto pela alta quantidade de neurônios quanto pela dificuldade de encontrar valor semântico em cada transformação."
+    )
+    f.write(explanation)
 
 # %%
 # (v) b-
@@ -203,12 +286,29 @@ for i in range(10):
 plot_digits(
     nn_params_2, n_rows=2, n_cols=5, fig_shape=(20, 8), img_shape=(10, 10)
 )
-
-print(
-    "Cada imagem representa os pesos que ligam a camada escondida da rede à camada de saída, em que uma regressão logística será realizada. Seria semelhante ao que ocorre"
-    "no modelo de regressão logística do item anterios. Entretanto, como o espaço de features é a projeção da entrada na camada intermediária, a interpretação se perde, não podendo"
-    "relacionar cada classe ao numeral correspondente."
+plt.suptitle(
+    "Neural Network - Hidden to Output Layer Weights", fontsize=16
 )
+plt.savefig(
+    os.path.join(results_dir, "neural_network_hidden_output_weights.png"),
+    dpi=300,
+    bbox_inches="tight",
+)
+plt.close()
+
+# Save explanation to file
+with open(
+    os.path.join(
+        results_dir, "neural_network_hidden_output_explanation.txt"
+    ),
+    "w",
+) as f:
+    explanation = (
+        "Cada imagem representa os pesos que ligam a camada escondida da rede à camada de saída, em que uma regressão logística será realizada. Seria semelhante ao que ocorre"
+        "no modelo de regressão logística do item anterios. Entretanto, como o espaço de features é a projeção da entrada na camada intermediária, a interpretação se perde, não podendo"
+        "relacionar cada classe ao numeral correspondente."
+    )
+    f.write(explanation)
 
 # %%
 # (c) Gere a matriz de confusão para as previsões do Naive Bayes no conjunto de teste. Veja para cada classe qual é o erro mais comum e dê uma possível explicação.
@@ -217,18 +317,56 @@ mask = 1 - np.identity(cm.shape[0])
 error_matrix = np.multiply(cm, mask)
 
 error_perc = error_matrix.sum(axis=1) / cm.sum(axis=1)
-print(cm, "\n")
 
-print(error_perc, "\n")
+# Plot confusion matrix
+plt.figure(figsize=(10, 8))
+plt.imshow(cm, interpolation="nearest", cmap="Blues")
+plt.title("Confusion Matrix - Naive Bayes", fontsize=16)
+plt.colorbar()
+tick_marks = np.arange(10)
+plt.xticks(tick_marks, range(10))
+plt.yticks(tick_marks, range(10))
+plt.ylabel("True label")
+plt.xlabel("Predicted label")
 
-value, count = np.unique(y_train, return_counts=True)
-print(
-    "Contagem da classe nos dados de treino\n",
-    np.concatenate((value, count)).reshape(2, 10),
+# Add text annotations
+for i in range(cm.shape[0]):
+    for j in range(cm.shape[1]):
+        plt.text(
+            j,
+            i,
+            format(cm[i, j], "d"),
+            ha="center",
+            va="center",
+            color="white" if cm[i, j] > cm.max() / 2 else "black",
+        )
+
+plt.savefig(
+    os.path.join(results_dir, "confusion_matrix_naive_bayes.png"),
+    dpi=300,
+    bbox_inches="tight",
 )
+plt.close()
 
-print(
-    f"\nA classe mais errada foi a {np.argmax(error_perc)}.Nota-se pela matriz de confusão"
-    "que o parte considerável dos erros para esta classe ocorreram pois o modelo previu 1, 3 e 8. Provavelmente isso acontece pela semelhança "
-    "dos dígitos 5, 3 e 8 e pelo desbalanceamento da classe 1 nos dados de treino, que foi a mais frequente."
-)
+# Save confusion matrix analysis to file
+with open(
+    os.path.join(results_dir, "confusion_matrix_analysis.txt"), "w"
+) as f:
+    with redirect_stdout(f):
+        print("Confusion Matrix:")
+        print(cm, "\n")
+
+        print("Error percentages by class:")
+        print(error_perc, "\n")
+
+        value, count = np.unique(y_train, return_counts=True)
+        print(
+            "Contagem da classe nos dados de treino\n",
+            np.concatenate((value, count)).reshape(2, 10),
+        )
+
+        print(
+            f"\nA classe mais errada foi a {np.argmax(error_perc)}.Nota-se pela matriz de confusão"
+            "que o parte considerável dos erros para esta classe ocorreram pois o modelo previu 1, 3 e 8. Provavelmente isso acontece pela semelhança "
+            "dos dígitos 5, 3 e 8 e pelo desbalanceamento da classe 1 nos dados de treino, que foi a mais frequente."
+        )
