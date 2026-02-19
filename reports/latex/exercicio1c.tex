@@ -1,0 +1,16 @@
+\subsection*{Item c}
+\addcontentsline{toc}{subsection}{Item c}
+A partir do estimador em forma fechada encontrado no item (b):
+$$ \hat{\beta} = (X^T X + \lambda I)^{-1}X^T Y $$
+$$ = (\lambda I + X^T I X)^{-1} X^T Y$$
+
+$$ = \left[(\lambda I)^{-1} - (\lambda I)^{-1}X^T(I + X(\lambda I)^{-1}X^T)^{-1}X(\lambda I)^{-1} \right] X^T Y $$
+$$ = \left[\frac{1}{\lambda}I - \frac{1}{\lambda}X^T \left(I + \frac{1}{\lambda}XX^T \right)^{-1} X\frac{1}{\lambda} \right] X^T Y $$
+$$ = \frac{1}{\lambda} \left[ X^T - X^T \left(I + \frac{1}{\lambda}XX^T \right)^{-1} \left(\frac{1}{\lambda}XX^T \right) \right] Y $$
+$$ = \frac{1}{\lambda} X^T \left[ I - \left(I + \frac{1}{\lambda}XX^T \right)^{-1} \left(\frac{1}{\lambda}XX^T \right) \right] Y $$
+$$ = \frac{1}{\lambda} X^T \left[ I - \left(I + \frac{1}{\lambda}XX^T \right)^{-1} \left(I + \frac{1}{\lambda}XX^T - I \right) \right] Y $$
+$$ = \frac{1}{\lambda} X^T \left[ I - I + \left(I + \frac{1}{\lambda}XX^T \right)^{-1} \right] Y $$
+$$ = X^T \left[ \frac{1}{\lambda} \left(I + \frac{1}{\lambda}XX^T \right)^{-1} Y \right] $$
+
+Portanto, podemos escrever $ \hat{\beta} = X^T \alpha $, onde o vetor $ \alpha $ é dado por:
+$$ \alpha = \frac{1}{\lambda} \left(I + \frac{1}{\lambda}XX^T \right)^{-1} Y $$

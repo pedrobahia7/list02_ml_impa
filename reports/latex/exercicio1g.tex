@@ -1,0 +1,224 @@
+\subsection*{Item g}
+\addcontentsline{toc}{subsection}{Item g}
+
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split, KFold
+from sklearn.linear_model import Ridge, LinearRegression
+from sklearn.kernel_ridge import KernelRidge
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
+from sklearn.metrics import mean_squared_error
+
+number_of_folds = 10
+data = pd.read_csv("../data/bodyfat.csv")
+X = data.drop(columns=["BodyFat", "Density"])
+y = data["BodyFat"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=0
+    )
+\end{lstlisting}
+\newpage
+\subsubsection*{(i) Erro médio quadrático da regressão linear}
+
+\begin{lstlisting}[language=Python]
+linear_regression_model = LinearRegression(fit_intercept=True)
+linear_regression_model.fit(X_train, y_train)
+y_hat = linear_regression_model.predict(X_test)
+mse_linear = mean_squared_error(y_true=y_test, y_pred=y_hat)
+
+y_hat_train = linear_regression_model.predict(X_train)
+mse_linear_train = mean_squared_error(y_true=y_train, y_pred=y_hat_train)
+\end{lstlisting}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Conjunto & Erro médio quadrático       \\ \hline
+        Teste    & \textbf{15.910489104854445} \\
+        Treino   & \textbf{18.090133641655044} \\
+        \hline
+    \end{tabular}
+    \caption{Resultados da regressão linear}
+\end{table}
+\newpage
+\subsubsection*{(ii) Erro médio quadrático da regressão ridge}
+
+\begin{lstlisting}[language=Python]
+alphas = 10 ** np.linspace(3, -2, 100)
+ridge_cv_mse = []
+for alpha in tqdm(alphas):
+    cv_MSE = []
+    folds = KFold(
+        n_splits=number_of_folds, shuffle=True, random_state=2023
+    ).split(X_train, y_train)
+
+    for train_idx, val_idx in folds:
+        ridge_pipeline = make_pipeline(
+            StandardScaler(), Ridge(alpha=alpha)
+        )
+        ridge_pipeline[1].fit(
+            X_train.iloc[train_idx], y_train.iloc[train_idx]
+        )
+        y_hat = ridge_pipeline[1].predict(
+            X_train.iloc[val_idx]
+        )
+        cv_MSE.append(
+            mean_squared_error(y_true=y_train.iloc[val_idx], y_pred=y_hat)
+        )
+
+    ridge_cv_mse.append(np.mean(cv_MSE))
+
+optimal_alpha = alphas[np.argmin(ridge_cv_mse)]
+ridge_pipeline = make_pipeline(
+    StandardScaler(), Ridge(alpha=optimal_alpha)
+)
+ridge_pipeline[1].fit(X_train, y_train)
+y_hat_ridge = ridge_pipeline[1].predict(X_test)
+ridge_test_mse = mean_squared_error(y_true=y_test, y_pred=y_hat_ridge)
+
+y_hat_ridge_train = ridge_pipeline[1].predict(X_train)
+ridge_train_mse = mean_squared_error(
+    y_true=y_train, y_pred=y_hat_ridge_train
+)
+\end{lstlisting}
+
+O melhor valor de $\alpha$ encontrado foi \textbf{123.28467394420659}. Com ele, obteve-se os seguintes erros médios
+quadráticos:
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Conjunto             & Erro médio quadrático       \\ \hline
+        Validação (10 folds) & \textbf{21.435531198668574} \\
+        Teste                & \textbf{16.146896300698355} \\
+        Treino               & \textbf{18.529265711031723} \\
+        \hline
+    \end{tabular}
+    \caption{Resultados da regressão ridge}
+\end{table}
+\newpage
+\subsubsection*{(iii) Kernel para Ridge Regression}
+
+\begin{lstlisting}[language=Python]
+kernels = ["linear", "polynomial", "rbf", "laplacian"]
+gammas = [10**-3]
+alphas = 10 ** np.linspace(3, -2, 100)
+hyperparams = [
+    (kernel, gamma, alpha)
+    for kernel in kernels
+    for gamma in gammas
+    for alpha in alphas
+]
+
+kernel_ridge_cv_mse = []
+for hyperparam in tqdm(hyperparams):
+    kernel_fold, gamma_fold, alpha_fold = hyperparam
+    cv_MSE = []
+    folds = KFold(
+        n_splits=number_of_folds, shuffle=True, random_state=2023
+    ).split(X_train, y_train)
+
+    for train_idx, val_idx in folds:
+        kernel_ridge_pipeline = make_pipeline(
+            StandardScaler(),
+            KernelRidge(
+                kernel=kernel_fold, 
+                alpha=alpha_fold,
+                gamma=gamma_fold
+            ),
+        )
+        kernel_ridge_pipeline[1].fit(
+            X_train.iloc[train_idx], y_train.iloc[train_idx]
+        )
+        y_hat = kernel_ridge_pipeline[1].predict(X_train.iloc[val_idx])
+        cv_MSE.append(
+            mean_squared_error(y_true=y_train.iloc[val_idx], y_pred=y_hat)
+        )
+
+    kernel_ridge_cv_mse.append(np.mean(cv_MSE))
+
+optimal_hyperparam = hyperparams[np.argmin(kernel_ridge_cv_mse)]
+optimal_kernel, optimal_gamma, optimal_alpha = optimal_hyperparam
+
+kernel_ridge_pipeline = make_pipeline(
+    StandardScaler(),
+    KernelRidge(
+        kernel=optimal_kernel, alpha=optimal_alpha, gamma=optimal_gamma
+    ),
+)
+kernel_ridge_pipeline[1].fit(X_train, y_train)
+kernel_y_hat_ridge = kernel_ridge_pipeline[1].predict(X_test)
+kernel_ridge_test_mse = mean_squared_error(
+    y_true=y_test, y_pred=kernel_y_hat_ridge
+)
+
+kernel_y_hat_ridge_train = kernel_ridge_pipeline[1].predict(X_train)
+kernel_ridge_train_mse = mean_squared_error(
+    y_true=y_train, y_pred=kernel_y_hat_ridge_train
+)
+\end{lstlisting}
+
+O melhor conjunto de hiperparâmetros encontrado é:
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Hiperparâmetro & Valor                        \\ \hline
+        $\alpha$       & \textbf{0.03593813663804626} \\
+        $\gamma$       & \textbf{0.001}               \\
+        kernel         & \textbf{laplacian}           \\ \hline
+    \end{tabular}
+\end{table}
+
+Com ele, os erros médios encontrados foram:
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Conjunto             & Erro médio quadrático       \\ \hline
+        Validação (10 folds) & \textbf{20.654538652474056} \\
+        Teste                & \textbf{17.02053852320954}  \\
+        Treino               & \textbf{8.510986395703279}  \\
+        \hline
+    \end{tabular}
+    \caption{Resultados da regressão ridge com kernel}
+\end{table}
+
+
+\newpage
+\subsubsection*{(iv) Comparação dos modelos}
+
+\textbf{Resultados no conjunto de treino:}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Modelo                     & Erro médio quadrático       \\ \hline
+        Regressão linear           & \textbf{18.090133641655044} \\
+        Regressão ridge            & \textbf{18.529265711031723} \\
+        Regressão ridge com kernel & \textbf{8.510986395703279}  \\
+        \hline
+    \end{tabular}
+    \caption{Resultados de treino}
+\end{table}
+
+\textbf{Resultados no conjunto de teste:}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        Modelo                     & Erro médio quadrático       \\ \hline
+        Regressão linear           & \textbf{15.910489104854445} \\
+        Regressão ridge            & \textbf{16.146896300698355} \\
+        Regressão ridge com kernel & \textbf{17.02053852320954}  \\
+        \hline
+    \end{tabular}
+    \caption{Resultados de teste}
+\end{table}
+
+Dos três modelos analisados, o erro de teste da Regressão Linear foi o menor. Mesmo com a divisão em k-folds, aparentemente houve overfitting na regressão Ridge com Kernel, já que seu erro de treino é consideravelmente menor que o erro de teste e o erro de treino é o menor dentre os demais modelos. Este comportamento não é anormal, dado que estamos projetando os dados em um espaço vetorial de maior dimensão. Já a regressão ridge teve o pior dentre os erros de treino, o que é esperado dada a restrição introduzida pelo método. Seu erro de teste foi maior que o do regressor linear, o que também não é anormal.

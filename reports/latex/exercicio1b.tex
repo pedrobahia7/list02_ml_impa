@@ -1,0 +1,22 @@
+\subsection*{Item b}
+\addcontentsline{toc}{subsection}{Item b}
+A função de custo na forma matricial, com $ \beta_0 $ = 0, é:
+$$ L = (Y - X\beta)^T(Y - X\beta) + \lambda \beta^T\beta $$
+
+Derivando em relação ao vetor $ \beta $ e igualando a zero, temos:
+$$ \frac{\partial L}{\partial \beta} = -2X^T(Y - X\beta) + 2\lambda\beta = 0 $$
+$$ -X^T Y + X^T X \beta + \lambda\beta = 0 $$
+$$ (X^T X + \lambda I)\beta = X^T Y $$
+
+O estimador em forma fechada é:
+$$ \hat{\beta} = (X^T X + \lambda I)^{-1}X^T Y $$
+
+
+
+
+
+
+Assumindo que $ \lambda \to 0 $, o termo de regularização desaparece e temos:
+$$ \hat{\beta} = (X^T X)^{-1}X^T Y $$
+que é a fórmula fechada clássica para a Regressão Linear sem regularização.
+

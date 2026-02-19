@@ -1,0 +1,13 @@
+\subsection*{Item f}
+\addcontentsline{toc}{subsection}{Item f}
+No cálculo da função de custo e na otimização do SVM, apenas os vetores de
+suporte são considerados. Pelas condições de KKT, temos que $ \alpha_i > 0 $
+apenas para os pontos onde a restrição de margem é ativa, ou seja, onde
+$ y_i(w^T x_i + \beta) = 1 $ (os vetores de suporte). Para todas as outras
+amostras, $ \alpha_i = 0 $. Isso faz com que o vetor $ \alpha $ no SVM seja
+altamente esparso.
+
+Enquanto isso, na Ridge Regression, os valores de $ \alpha_i $ calculados raramente serão nulos.
+De modo que a quase totalidade das amostras de treino contribuirá para a
+soma final da previsão $ \hat{y}^* $. Devido à esparsidade do vetor
+$ \alpha $ no SVM, ele se torna computacionalmente mais eficiente..
