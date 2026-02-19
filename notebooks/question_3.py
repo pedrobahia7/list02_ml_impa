@@ -41,7 +41,7 @@ def plot_digits(
 
 
 # Create results directory if it doesn't exist
-results_dir = "../results/"
+results_dir = "reports/figures/3"
 os.makedirs(results_dir, exist_ok=True)
 
 mnist = fetch_openml("mnist_784")  # Baixar os dados
