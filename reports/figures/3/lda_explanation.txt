@@ -1,0 +1,1 @@
+Cada uma das imagens é a média da respectiva classe no espaço de entrada. Essa imagem seria equivalente a uma amostra média, ponto central em relaçãoàs demais amostras da classe. As previsões do modelo baseiam-se em uma métrica de similaridade  da entrada em relação a cada uma dessas médias. É possivel interpretarcom facilidade a classe relacionada a cada imagem.
