@@ -106,20 +106,21 @@ for model in models:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{|l|c|c|c|}
-        \hline
-        \textbf{Modelo}     & \textbf{Acurácia} & \textbf{Tempo Treino (s)} & \textbf{Tempo Teste (s)} \\
-        \hline
-        Naive Bayes         & 0.835             & 0.714                     & 0.164                    \\
-        LDA                 & 0.868             & 10.523                    & 0.041                    \\
-        QDA                 & 0.943             & 7.505                     & 4.218                    \\
-        Regressão Logística & 0.920             & 13.126                    & 0.038                    \\
-        kNN                 & 0.969             & 0.249                     & 23.711                   \\
-        SVM                 & 0.982             & 218.776                   & 136.266                  \\
-        Random Forest       & 0.967             & 63.221                    & 0.611                    \\
-        Rede Neural         & 0.976             & 105.215                   & 0.101                    \\
-        \hline
-    \end{tabular}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|c|c|c|c|}
+            \hline
+            \textbf{Modelo}     & \textbf{Acurácia Teste} & \textbf{Acurácia Treino} & \textbf{Tempo Treino (s)} & \textbf{Tempo Teste (s)} \\ \hline
+            Naive Bayes         & 0.835                   & 0.832                    & 0.714                     & 0.164                    \\
+            LDA                 & 0.868                   & 0.873                    & 10.523                    & 0.041                    \\
+            QDA                 & 0.943                   & 0.957                    & 7.505                     & 4.218                    \\
+            Regressão Logística & 0.920                   & 0.936                    & 13.126                    & 0.038                    \\
+            kNN                 & 0.969                   & 0.979                    & 0.249                     & 23.711                   \\
+            SVM                 & 0.982                   & 1.0                      & 218.776                   & 136.266                  \\
+            Random Forest       & 0.967                   & 1.0                      & 63.221                    & 0.611                    \\
+            Rede Neural         & 0.976                   & 0.999                    & 105.215                   & 0.101                    \\
+            \hline
+        \end{tabular}
+    }
     \caption{Comparação de acurácia e tempos de execução dos modelos}
     \label{tab:model_comparison}
 \end{table}

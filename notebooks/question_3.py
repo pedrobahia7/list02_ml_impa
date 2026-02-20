@@ -89,11 +89,11 @@ models = [nb, lda, qda, lr, knn, svc, rf, nn]
 
 
 yhats = []
-accuracy = []
+accuracy_test = []
+accuracy_train = []
 time_train = []
 time_test = []
 i = 0
-
 # Capture training results to text file
 with open(os.path.join(results_dir, "model_performance.txt"), "w") as f:
     with redirect_stdout(f):
@@ -109,12 +109,21 @@ with open(os.path.join(results_dir, "model_performance.txt"), "w") as f:
             time_test.append(end_time - start_time)
 
             yhats.append(yhat)
-            accuracy.append(accuracy_score(y_true=y_test, y_pred=yhat))
+            accuracy_test.append(
+                accuracy_score(y_true=y_test, y_pred=yhat)
+            )
+            accuracy_train.append(
+                accuracy_score(
+                    y_true=y_train, y_pred=model.predict(X_train)
+                )
+            )
             print(
                 "model",
                 models[i].__class__.__name__,
-                "accuracy:",
-                accuracy[i],
+                "accuracy_train:",
+                accuracy_train[i],
+                "accuracy_test:",
+                accuracy_test[i],
                 "time_train:",
                 time_train[i],
                 "time_test:",
