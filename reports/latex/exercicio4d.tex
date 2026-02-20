@@ -1,0 +1,85 @@
+\section*{Parte (d)}
+
+\subsection*{(d-i)}
+Identifique o problema e experimente uma possível solução.
+
+\vspace{0.5em}
+\noindent \textbf{Identificação do problema}: O principal problema identificado no item anterior é o \textit{vanishing gradient}, onde os gradientes da primeira camada (entrada $\rightarrow$ escondida) apresentam magnitudes extremamente pequenas, da ordem de $10^{-7}$.
+
+\vspace{0.5em}
+\noindent \textbf{Solução implementada}: Inicialização Xavier/Glorot, que normaliza os pesos iniciais considerando o número de neurônios das camadas:
+
+\begin{lstlisting}[language=Python]
+def inicializar_xavier(modelo):
+    """Aplica inicialização Xavier/Glorot aos pesos do modelo"""
+    for m in modelo.modules():
+        if isinstance(m, nn.Linear):
+            nn.init.xavier_uniform_(m.weight)
+            nn.init.zeros_(m.bias)
+
+# Modelo com inicialização Xavier
+modelo_xavier = ModeloSimples(X_train_tfidf.shape[1], 25, 4)
+inicializar_xavier(modelo_xavier)
+
+# Treinamento com coleta de gradientes
+criterio = nn.CrossEntropyLoss()
+otimizador_xavier = torch.optim.SGD(modelo_xavier.parameters(), lr=0.01)
+
+grad_fc1_weights_xavier = []
+grad_fc1_bias_xavier = []
+grad_fc2_weights_xavier = []
+grad_fc2_bias_xavier = []
+
+for epoch in range(100):
+    modelo_xavier.train()
+    otimizador_xavier.zero_grad()
+    
+    output, hidden = modelo_xavier(X_train_tensor)
+    loss = criterio(output, y_train_tensor)
+    loss.backward()
+    
+    # Coleta dos gradientes
+    grad_fc1_weights_xavier.append(modelo_xavier.fc1.weight.grad.norm().item())
+    grad_fc1_bias_xavier.append(modelo_xavier.fc1.bias.grad.norm().item())
+    grad_fc2_weights_xavier.append(modelo_xavier.fc2.weight.grad.norm().item())
+    grad_fc2_bias_xavier.append(modelo_xavier.fc2.bias.grad.norm().item())
+    
+    otimizador_xavier.step()
+\end{lstlisting}
+
+\subsection*{(d-ii)}
+Compare os gráficos antes e depois da solução.
+
+\vspace{0.5em}
+\noindent A comparação dos gráficos demonstra a eficácia da inicialização Xavier:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{../figures/4/gradient_comparison.png}
+    \caption{Comparação da evolução dos gradientes: inicialização padrão vs. Xavier}
+    \label{fig:gradient_comparison}
+\end{figure}
+
+\vspace{0.5em}
+\noindent \textbf{Melhorias observadas}:
+
+\begin{enumerate}
+    \item \textbf{Magnitude dos gradientes}: Os gradientes da primeira camada aumentaram significativamente, passando de $\sim 10^{-7}$ para $\sim 10^{-3}$, um aumento de 4 ordens de magnitude.
+
+    \item \textbf{Estabilidade do treinamento}: A inicialização Xavier proporciona gradientes mais estáveis ao longo das épocas, evitando a saturação prematura.
+
+    \item \textbf{Convergência melhorada}: Com gradientes mais balanceados, ambas as camadas podem aprender de forma mais efetiva.
+
+    \item \textbf{Relação entre camadas}: A diferença de magnitude entre os gradientes das diferentes camadas diminuiu, indicando um fluxo de gradiente mais equilibrado.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Análise da inicialização Xavier}: A inicialização Xavier funciona porque:
+\begin{itemize}
+    \item Normaliza os pesos iniciais com base no número de conexões de entrada e saída
+    \item Mantém a variância das ativações e gradientes equilibrada ao longo das camadas
+    \item Previne a saturação prematura das funções de ativação
+\end{itemize}
+
+\vspace{0.5em}
+\noindent Esta melhoria fundamental permite que a rede neural aprenda representações mais efetivas dos dados de entrada, preparando o terreno para a implementação bem-sucedida do mecanismo de atenção.

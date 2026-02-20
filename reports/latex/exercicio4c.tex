@@ -1,0 +1,72 @@
+\section*{Parte (c)}
+
+\subsection*{(c)}
+Implemente uma rede neural simples com uma camada escondida. Adicione uma saída da ativação da camada escondida no \textit{forward}. Construa um gráfico que mostra a evolução do gradiente dos pesos da camada entrada $\rightarrow$ escondida e escondida $\rightarrow$ saída durante o treinamento.
+
+\vspace{0.5em}
+\noindent O código implementado para análise dos gradientes:
+
+\begin{lstlisting}[language=Python]
+class ModeloSimples(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim):
+        super(ModeloSimples, self).__init__()
+        self.fc1 = nn.Linear(input_dim, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, output_dim)
+        
+    def forward(self, x):
+        hidden = torch.tanh(self.fc1(x))  # Ativação da camada escondida
+        output = self.fc2(hidden)
+        return output, hidden
+
+# Configuração do modelo
+modelo = ModeloSimples(X_train_tfidf.shape[1], 25, 4)
+criterio = nn.CrossEntropyLoss()
+otimizador = torch.optim.SGD(modelo.parameters(), lr=0.01)
+
+# Lista para armazenar gradientes
+grad_fc1_weights = []
+grad_fc1_bias = []
+grad_fc2_weights = []
+grad_fc2_bias = []
+
+# Treinamento com coleta de gradientes
+for epoch in range(100):
+    modelo.train()
+    otimizador.zero_grad()
+    
+    output, hidden = modelo(X_train_tensor)
+    loss = criterio(output, y_train_tensor)
+    loss.backward()
+    
+    # Coleta dos gradientes
+    grad_fc1_weights.append(modelo.fc1.weight.grad.norm().item())
+    grad_fc1_bias.append(modelo.fc1.bias.grad.norm().item())
+    grad_fc2_weights.append(modelo.fc2.weight.grad.norm().item())
+    grad_fc2_bias.append(modelo.fc2.bias.grad.norm().item())
+    
+    otimizador.step()
+\end{lstlisting}
+
+\vspace{0.5em}
+\noindent A análise dos gradientes revela um problema crítico:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{../figures/4/gradient_bad_init.png}
+    \caption{Evolução dos gradientes com inicialização padrão - observe a magnitude muito pequena dos gradientes da primeira camada}
+    \label{fig:gradient_bad}
+\end{figure}
+
+\vspace{0.5em}
+\noindent \textbf{Problema observado}: O gradiente da camada entrada $\rightarrow$ escondida apresenta magnitude extremamente pequena (da ordem de $10^{-7}$), caracterizando o problema de \textit{vanishing gradients}.
+
+\vspace{0.5em}
+\noindent \textbf{Causa do problema}:
+\begin{enumerate}
+    \item A função de ativação $\tanh$ tem derivada máxima de 1, mas tipicamente muito menor
+    \item A inicialização padrão dos pesos pode levar a saturação das ativações
+    \item O gradiente se propaga multiplicativamente, resultando em valores muito pequenos nas camadas anteriores
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent Este problema impede o aprendizado efetivo da primeira camada, comprometendo a capacidade de extração de características relevantes dos dados de entrada.

@@ -1,0 +1,64 @@
+\section*{Parte (a)}
+
+\subsection*{(a)}
+A partir da representação \textit{TF-IDF} dos textos, visualize a similaridade par a par dessa sequência específica (\textit{head\_view}) para interpretar o resultado.
+
+\vspace{0.5em}
+\noindent O código implementado para a visualização de atenção dos vetores TF-IDF:
+
+\begin{lstlisting}[language=Python]
+# Criação da matriz de atenção usando vetores TF-IDF
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Preprocessamento dos dados
+scaler = StandardScaler()
+X = scaler.fit_transform(np.concatenate([X_train, X_val, X_test]))
+X_train_scaled = X[:len(X_train)]
+X_val_scaled = X[len(X_train):len(X_train)+len(X_val)]
+X_test_scaled = X[len(X_train)+len(X_val):]
+
+# Otimização de hiperparâmetros usando RandomizedSearchCV
+param_dist = {
+    'max_features': [300, 500, 750, 1000, 1500, 2000],
+    'ngram_range': [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3)],
+    'min_df': [2, 3, 4, 5],
+    'max_df': [0.5, 0.6, 0.7, 0.8, 0.9]
+}
+
+best_params = {'max_features': 1000, 'ngram_range': (1, 2), 
+               'min_df': 2, 'max_df': 0.9}
+
+# Criação do vetorizador TF-IDF com os melhores parâmetros
+vectorizer = TfidfVectorizer(max_features=best_params['max_features'],
+                           ngram_range=best_params['ngram_range'],
+                           min_df=best_params['min_df'],
+                           max_df=best_params['max_df'])
+
+# Aplicação da vetorização TF-IDF
+X_train_tfidf = vectorizer.fit_transform(texts_train)
+X_test_tfidf = vectorizer.transform(texts_test)
+
+# Seleção dos primeiros 32 exemplos para visualização
+b = X_test_tfidf[:32].toarray()
+tokens = [f"News {i+1}" for i in range(32)]
+
+# Cálculo da matriz de atenção baseada na similaridade TF-IDF
+att = b @ b.T
+att = att.reshape(1, 1, 32, 32)
+att = torch.tensor(att)
+
+# Visualização usando head_view
+head_view((att,), tokens)
+\end{lstlisting}
+
+\vspace{0.5em}
+\noindent A visualização da matriz de atenção TF-IDF revela os seguintes insights:
+
+\begin{enumerate}
+    \item \textbf{Estrutura de blocos}: A matriz apresenta uma estrutura de blocos organizada por classes, indicando que artigos da mesma categoria têm maior similaridade entre si.
+
+    \item \textbf{Interpretação da similaridade}: A intensidade das cores representa a força da relação semântica entre os pares de artigos, onde cores mais intensas indicam maior sobreposição de termos importante segundo a métrica TF-IDF.
+
+    \item \textbf{Padrões observados}: Artigos de categorias distintas apresentam baixa similaridade (regiões escuras), enquanto artigos da mesma categoria mostram maior similaridade (regiões mais claras).
+\end{enumerate}

@@ -1,0 +1,111 @@
+\section*{Parte (b)}
+
+\subsection*{(b-i)}
+Demonstre que a projeção ortogonal de um vetor $v$ no subespaço gerado por um vetor unitário $u$ é $\text{proj}_u(v) = (v \cdot u) u$.
+
+\vspace{0.5em}
+\noindent Seja $v$ um vetor qualquer e $u$ um vetor unitário ($||u|| = 1$). Para determinar a projeção ortogonal de $v$ no subespaço gerado por $u$, seguimos os seguintes passos:
+
+\vspace{0.5em}
+\noindent \textbf{Decomposição de $v$}: Podemos escrever $v$ como a soma de duas componentes:
+\begin{equation*}
+    v = \text{proj}_u(v) + \text{componente perpendicular}
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Forma da projeção}: Como a projeção pertence ao subespaço gerado por $u$, ela pode ser escrita na forma $\text{proj}_u(v) = \alpha u$ para algum escalar $\alpha$.
+
+\vspace{0.5em}
+\noindent \textbf{Condição de ortogonalidade}: A componente perpendicular $(v - \alpha u)$ deve ser ortogonal a $u$:
+\begin{equation*}
+    (v - \alpha u) \cdot u = 0
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Cálculo do coeficiente}: Expandindo a condição de ortogonalidade:
+\begin{align*}
+    v \cdot u - \alpha (u \cdot u) & = 0                                       \\
+    v \cdot u - \alpha ||u||^2     & = 0                                       \\
+    v \cdot u - \alpha             & = 0 \quad \text{(pois } ||u|| = 1\text{)} \\
+    \alpha                         & = v \cdot u
+\end{align*}
+
+\vspace{0.5em}
+\noindent Portanto, $\text{proj}_u(v) = (v \cdot u) u$.
+
+\subsection*{(b-ii)}
+Demonstre que se aplicamos uma transformação linear $A$ em ambos os vetores $v$ e $u$, a projeção de $Av$ na direção de $Au$ é dada por $\text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au$. Demonstre que esta fórmula não é equivalente a aplicar a transformação $A$ à projeção original: $A(\text{proj}_u(v))$.
+
+\vspace{0.5em}
+\noindent \textbf{Parte 1}: Demonstrar a fórmula da projeção após transformação:
+
+\vspace{0.5em}
+\noindent Quando $u$ não é mais unitário após a transformação $A$, devemos usar a fórmula geral da projeção ortogonal:
+\begin{equation*}
+    \text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au
+\end{equation*}
+
+\vspace{0.5em}
+\noindent Esta fórmula é derivada da mesma condição de ortogonalidade, mas considerando que $Au$ pode ter norma diferente de 1.
+
+\vspace{0.5em}
+\noindent \textbf{Parte 2}: Mostrar que $\text{proj}_{Au}(Av) \neq A(\text{proj}_u(v))$:
+
+\vspace{0.5em}
+\noindent Temos:
+\begin{align*}
+    A(\text{proj}_u(v)) & = A((v \cdot u) u) \\
+                        & = (v \cdot u) Au
+\end{align*}
+
+\vspace{0.5em}
+\noindent Compare com:
+\begin{equation*}
+    \text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au
+\end{equation*}
+
+\vspace{0.5em}
+\noindent Para que fossem equivalentes, seria necessário:
+\begin{equation*}
+    (v \cdot u) = \frac{(Av) \cdot (Au)}{||Au||^2}
+\end{equation*}
+
+\vspace{0.5em}
+\noindent Em geral, esta igualdade não se verifica, especialmente quando $A$ não preserva o produto interno.
+
+\subsection*{(b-iii)}
+Mostre que $\cos(\theta)$ entre dois vetores $v$ e $u$ é preservado se e somente se $A$ preserva o produto interno, i.e., $(Av) \cdot (Au) = v \cdot u$.
+
+\vspace{0.5em}
+\noindent \textbf{Definição do cosseno}: O cosseno do ângulo entre dois vetores é dado por:
+\begin{equation*}
+    \cos(\theta) = \frac{v \cdot u}{||v|| \cdot ||u||}
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Após a transformação}:
+\begin{equation*}
+    \cos(\theta') = \frac{(Av) \cdot (Au)}{||Av|| \cdot ||Au||}
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Condição para preservação}: Para que $\cos(\theta) = \cos(\theta')$, devemos ter:
+\begin{equation*}
+    \frac{v \cdot u}{||v|| \cdot ||u||} = \frac{(Av) \cdot (Au)}{||Av|| \cdot ||Au||}
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Se $A$ preserva o produto interno}: Se $(Av) \cdot (Au) = v \cdot u$ para todos os vetores $v$ e $u$, então:
+\begin{align*}
+    ||Av||^2 & = (Av) \cdot (Av) = v \cdot v = ||v||^2 \\
+    ||Au||^2 & = (Au) \cdot (Au) = u \cdot u = ||u||^2
+\end{align*}
+
+\vspace{0.5em}
+\noindent Portanto, $||Av|| = ||v||$ e $||Au|| = ||u||$, o que implica:
+\begin{equation*}
+    \cos(\theta') = \frac{v \cdot u}{||v|| \cdot ||u||} = \cos(\theta)
+\end{equation*}
+
+\vspace{0.5em}
+\noindent \textbf{Reciprocamente}: Se o cosseno é preservado para todos os pares de vetores, então a transformação deve preservar tanto o produto interno quanto as normas, o que implica preservação do produto internal.

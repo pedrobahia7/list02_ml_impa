@@ -9,7 +9,7 @@ Explique o que essa visualização representa e interprete os resultados obtidos
 \vspace{0.5em}
 \noindent O código que gera esta visualização:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Python]
 seq = X_test[:32,:]
 b = seq.toarray()
 att = b@b.T
@@ -22,10 +22,17 @@ for i in y_test[:32]:
     tokens.append(token)
     counts[i]+=1
 head_view((att,), tokens)
-\end{verbatim}
+\end{lstlisting}
 
 \noindent A matriz de atenção $att$ é calculada como $att = b \cdot b^T$, onde $b$ são as representações TF-IDF das 32 primeiras amostras.
 Esta operação produz uma matriz 32x32 onde cada entrada $(i,j)$ representa a similaridade cosseno entre as amostras $i$ e $j$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figures/4/attention_visualization_description.png}
+    \caption{Descrição da visualização de atenção TF-IDF}
+    \label{fig:attention_description}
+\end{figure}
 
 \section*{Parte (b)}
 
@@ -122,10 +129,39 @@ Note que a rede não está aprendendo. Explique qual é o problema e exponha evi
     \item \textbf{Saída do softmax saturada}: O histograma da saída do softmax mostra valores próximos a 1, indicando saturação da função.
 \end{enumerate}
 
-\vspace{0.5em}
-\noindent O código que demonstra esse problema:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/loss_no_init_fix.png}
+    \caption{Função perda sem inicialização adequada - sem aprendizado}
+    \label{fig:loss_no_init}
+\end{figure}
 
-\begin{verbatim}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_no_init_fix.png}
+    \caption{Distribui\c{c}\~{o}es dos pesos iniciais $A_K$ e $A_Q$}
+    \label{fig:weights_no_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_no_init_fix.png}
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_no_init_fix.png}
+    \caption{Histogramas dos gradientes de $A_K$ e $A_Q$ na primeira \'{e}poca (sem inicializa\c{c}\~{a}o adequada)}
+    \label{fig:gradients_no_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_no_init_fix.png}
+    \caption{Sa\'{i}da do softmax na primeira \'{e}poca (sem inicializa\c{c}\~{a}o adequada)}
+    \label{fig:softmax_no_init}
+\end{figure}
+
+\vspace{0.5em}
+\noindent O c\'{o}digo que demonstra esse problema:
+
+\begin{lstlisting}[language=Python]
 # Inicialização sem normalização adequada
 A_K = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
 A_Q = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
@@ -136,7 +172,7 @@ for epoch in range(n_epochs):
     att = softmax((K.T@Q)/(D**(1/2)))
     loss = -cos(att,truth).mean()
     loss.backward()
-\end{verbatim}
+\end{lstlisting}
 
 \section*{Parte (d)}
 
@@ -149,14 +185,14 @@ Corrija o problema identificado no item anterior e demonstre que a rede agora co
 \vspace{0.5em}
 \noindent A correção implementada:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Python]
 def init_scale(fan_in):
     return (2/fan_in)**0.5
 
 # Inicialização com normalização adequada
 A_K = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
 A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
-\end{verbatim}
+\end{lstlisting}
 
 \vspace{0.5em}
 \noindent As evidências do aprendizado bem-sucedido incluem:
@@ -168,6 +204,35 @@ A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
 
     \item \textbf{Distribuição melhorada do softmax}: A saída do softmax apresenta uma distribuição mais balanceada, não saturada.
 \end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/loss_with_init_fix.png}
+    \caption{Fun\c{c}\~{a}o perda com inicializa\c{c}\~{a}o adequada - aprendizado bem-sucedido}
+    \label{fig:loss_with_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_with_init_fix.png}
+    \caption{Distribui\c{c}\~{o}es dos pesos iniciais $A_K$ e $A_Q$ com inicializa\c{c}\~{a}o adequada}
+    \label{fig:weights_with_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_with_init_fix.png}
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_with_init_fix.png}
+    \caption{Histogramas dos gradientes de $A_K$ e $A_Q$ na primeira \'{e}poca (com inicializa\c{c}\~{a}o adequada)}
+    \label{fig:gradients_with_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_with_init_fix.png}
+    \caption{Sa\'{i}da do softmax na primeira \'{e}poca (com inicializa\c{c}\~{a}o adequada)}
+    \label{fig:softmax_with_init}
+\end{figure}
 
 
 \section*{Parte (e)}
@@ -228,13 +293,13 @@ Usando o comando head\_view, visualize a similaridade par a par que a rede assoc
 \vspace{0.5em}
 \noindent O código que gera a visualização após o treinamento:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Python]
 # Calculando a nova matriz de atenção com os pesos treinados
 att = (A_K.cpu().detach().numpy()@b.T ).T @ (A_Q.cpu().detach().numpy()@b.T )
 att = att.reshape(1,1,32,32)
 att = torch.tensor(att)
 head_view((att,), tokens)
-\end{verbatim}
+\end{lstlisting}
 
 \vspace{0.5em}
 \noindent A comparação entre as visualizações mostra:
@@ -249,3 +314,11 @@ head_view((att,), tokens)
 
 \vspace{0.5em}
 \noindent Esta comparação demonstra a eficácia do treinamento da rede neural em aprender representações mais discriminativas para a similaridade entre textos, superando métricas baseadas puramente em estatísticas de termos como TF-IDF.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/4/attention_begin.png}
+    \includegraphics[width=0.45\textwidth]{../figures/4/attention_learned.png}
+    \caption{Comparação entre a visualização de atenção inicial (TF-IDF) e após o treinamento (atenção aprendida)}
+    \label{fig:attention_comparison}
+\end{figure}

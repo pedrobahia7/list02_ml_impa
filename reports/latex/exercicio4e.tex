@@ -1,0 +1,46 @@
+\section*{Parte (e)}
+
+\subsection*{(e-i)}
+A camada de auto-atenção (self-attention) pode ser representada matematicamente como
+\begin{equation*}
+    \text{Sa}[X] = V[X] \cdot \text{Softmax} \left( \frac{K[X]^T Q[X]}{\sqrt{D}} \right)
+\end{equation*}
+Mostre que, se $K[X]$ e $Q[X]$ têm entradas gaussianas com média zero e variância $\sigma^2$, todas independentes entre si, cada entrada de $K[X]^T Q[X]$ tem variância $\sigma^4 D$. Use esse fato para argumentar a favor da divisão por $\sqrt{D}$.
+
+\vspace{0.5em}
+\noindent Seja $Z = K[X]^T Q[X] = \sum_{i=1}^D K_i[X]^T Q_i[X]$
+
+\noindent Calculando a Esperança $\mathbb{E}(Z)$:
+\begin{align*}
+    \mathbb{E}(Z) & = \mathbb{E}(K[X]^T Q[X])                                                         \\
+                  & = \mathbb{E}(K[X]^T) \cdot \mathbb{E}(Q[X]) \quad \text{(devido à independência)} \\
+                  & = 0 \cdot 0 = 0
+\end{align*}
+
+\noindent Calculando a Variância $\mathbb{V}(Z)$:
+\begin{align*}
+    \mathbb{V}(Z) & = \mathbb{V}(K[X]^T Q[X])                                                 \\
+                  & = \mathbb{E}\left([K[X]^T Q[X] - \mathbb{E}(K[X]^T Q[X])]^2\right)        \\
+                  & = \mathbb{E}\left((K[X]^T Q[X])^2\right) - (\mathbb{E}(K[X]^T Q[X]))^2    \\
+                  & = \mathbb{E}\left((K[X]^T)^2\right) \cdot \mathbb{E}\left((Q[X])^2\right)
+\end{align*}
+
+\noindent Como $\mathbb{V}(K[X]^T) = \mathbb{E}\left((K[X]^T)^2\right) - (\mathbb{E}[K[X]^T])^2$:
+\begin{equation*}
+    \mathbb{V}(K[X]^T) = \mathbb{E}\left((K[X]^T)^2\right)
+\end{equation*}
+
+\noindent Logo, $\mathbb{V}(Z) = \mathbb{V}(K[X]^T) \cdot \mathbb{V}(Q[X])$
+
+\noindent A variância de cada termo na soma é $\sigma^2 \cdot \sigma^2 = \sigma^4$. Somando sobre as $D$ dimensões:
+\begin{equation*}
+    \mathbb{V}(Z)_{ij} = \sum_{i=1}^D \sigma^4 = D\sigma^4
+\end{equation*}
+
+\noindent Para normalizarmos e obtermos variância unitária, devemos dividir pela raiz da variância. Como $\sigma$ é comum a ambos os termos da divisão, apenas $\sqrt{D}$ aparece no denominador.
+
+\subsection*{(e-ii)}
+É necessário assumir que as entradas são gaussianas para chegar a essa conclusão? Caso contrário, é necessário que sejam identicamente distribuídas?
+
+\vspace{0.5em}
+\noindent Não foi necessário assumir distribuição gaussiana das variáveis, apenas independência e mesmos valores de média e variância. Os mesmos resultados seriam obtidos caso as variáveis não seguissem a mesma distribuição, mas mantivessem a independência e os valores de média e variância constantes.
