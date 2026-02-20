@@ -1,0 +1,1 @@
+Considerando que cada classe terá a cor armazenada em uma matriz separada, precisamos apenas representar a classe na qual o pixel está inserido para reproduzir a imagem. Dessa forma, o número de bits por pixel necessários será log2(parameter)
