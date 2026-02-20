@@ -40,11 +40,11 @@ def plot_digits(
 mnist = fetch_openml("mnist_784")  # Baixar os dados
 X, y = mnist.data.to_numpy(), mnist.target.to_numpy()
 X = X / 255  # Colocar as features em [0, 1]
-# Divisão em treino e teste
+# Divisao em treino e teste
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
-# Plot dos dígitos
+# Plot dos digitos
 plot_digits(
     X, n_rows=2, n_cols=5, indexes=[21, 24, 16, 27, 26, 35, 13, 15, 17, 19]
 )
@@ -67,7 +67,7 @@ import time
 nb = BernoulliNB(force_alpha=True)  # Naive Bayes com features bernoulli
 lda = LinearDiscriminantAnalysis()  # LDA
 qda = QuadraticDiscriminantAnalysis(reg_param=0.01)  # QDA
-lr = LogisticRegression(random_state=42)  # Regressão Logística
+lr = LogisticRegression(random_state=42)  # Regressao Logistica
 knn = KNeighborsClassifier(n_neighbors=6)  # kNN com k = 6
 svc = svm.SVC(gamma="scale", class_weight="balanced", C=100)  # SVM
 rf = RandomForestClassifier(
@@ -80,7 +80,8 @@ nn = MLPClassifier(
 models = [nb, lda, qda, lr, knn, svc, rf, nn]
 
 yhats = []
-accuracy = []
+accuracy_test = []
+accuracy_train = []
 time_train = []
 time_test = []
 i = 0
@@ -96,7 +97,8 @@ for model in models:
     time_test.append(end_time - start_time)
 
     yhats.append(yhat)
-    accuracy.append(accuracy_score(y_true=y_test, y_pred=yhat))
+    accuracy_test.append(accuracy_score(y_true=y_test, y_pred=yhat))
+    accuracy_train.append(accuracy_score(y_true=y_train, y_pred=model.predict(X_train)))
     i += 1
 \end{lstlisting}
 
@@ -122,7 +124,10 @@ for model in models:
     \label{tab:model_comparison}
 \end{table}
 
-Os modelos com a melhor acurácia foram \textbf{SVM (98.2\%), Rede Neural (97.6\%) e kNN (96.9\%)}. O modelo mais rápido para treinar foi o \textbf{kNN (0.249s)}, enquanto o mais rápido para testar foi a \textbf{Regressão Logística (0.038s)}. Isso indica que modelos mais simples como kNN são eficientes no treinamento, mas podem ser lentos na predição devido à busca pelos vizinhos mais próximos. Por outro lado, modelos como SVM alcançam alta acurácia, mas requerem tempo computacional significativo tanto para treinamento quanto para predição.
+Os modelos com a melhor acurácia foram \textbf{SVM (98.2\%), Rede Neural (97.6\%) e kNN (96.9\%)}. O modelo mais rápido para treinar foi o \textbf{kNN (0.249s)},
+enquanto o mais rápido para testar foi a \textbf{Regressão Logística (0.038s)}. Isso indica que modelos mais simples como kNN são eficientes no treinamento,
+mas podem ser lentos na predição devido à busca pelos vizinhos mais próximos. Por outro lado, modelos como SVM alcançam alta acurácia, mas requerem tempo
+computacional significativo tanto para treinamento quanto para predição.
 
 \textbf{Observações:}
 Para a convergência do modelo de QDA, foi necessário adicionar um parâmetro de regularização \texttt{reg\_param = 0.01}.

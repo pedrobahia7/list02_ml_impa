@@ -20,7 +20,7 @@ plot_digits(nb_params)
 \end{figure}
 
 Cada imagem representa a probabilidade dos pixels da imagem pertencerem à respectiva classe, sendo que valores altos indicam pixels recorrentes para a classe. O produto entre este vetor e a entrada indicará a probabilidade da entrada ser pertencente à classe e será utilizada para classificação. A interpretação da imagem é simples e permite a reconstituição do dígito ao qual a classe referencia.
-
+\newpage
 \textbf{(ii) Parâmetros do LDA}
 
 \begin{lstlisting}[language=Python]
@@ -39,6 +39,7 @@ plot_digits(lda_params)
 \end{figure}
 
 Cada uma das imagens é a média da respectiva classe no espaço de entrada. Essa imagem seria equivalente a uma amostra média, ponto central em relação às demais amostras da classe. As previsões do modelo baseiam-se em uma métrica de similaridade da entrada em relação a cada uma dessas médias. É possível interpretar com facilidade a classe relacionada a cada imagem.
+\newpage
 
 \textbf{(iii) Parâmetros da Regressão Logística}
 
@@ -58,6 +59,7 @@ plot_digits(log_reg_params)
 \end{figure}
 
 A imagem representa o coeficiente da rede. Ao multiplicarmos pela entrada, teremos o logaritmo da probabilidade da amostra pertencer à classe sobre a probabilidade dela pertencer à classe de referência. A imagem mostrada é a resposta do modelo a uma matriz de 1's. Isso pode ser interpretado como a contribuição de cada pixel para a probabilidade final. Ainda mantemos uma interpretação válida de cada classe por meio da imagem, apesar de menos clara caso comparemos com as imagens dos modelos anteriores.
+\newpage
 
 \textbf{(iv) Importância das features no Random Forest}
 
@@ -76,6 +78,7 @@ plt.imshow(rf_params, cmap="plasma")
 \end{figure}
 
 A imagem representa a importância de cada pixel para o modelo, baseada na média do decaimento de uma métrica de impureza, no caso, o coeficiente de Gini. Valores altos indicam que aquela feature foi capaz de auxiliar na distinção entre as classes. Nesse caso, perde-se a interpretação individual das classes, entretanto ainda está clara qual a região mais importante para a classificação.
+\newpage
 
 \textbf{(v) Parâmetros da Rede Neural}
 

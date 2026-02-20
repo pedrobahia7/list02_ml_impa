@@ -17,7 +17,7 @@ value, count = np.unique(y_train, return_counts=True)
     \label{fig:confusion_matrix}
 \end{figure}
 
-\textbf{Análise dos erros mais comuns:}
+\textbf{Erros mais comuns:}
 
 \begin{table}[H]
     \centering
@@ -41,19 +41,5 @@ value, count = np.unique(y_train, return_counts=True)
     \label{tab:error_rates}
 \end{table}
 
-A classe mais confundida foi a \textbf{5} (28.8\% de erro). Nota-se pela matriz de confusão que parte considerável dos erros para esta classe ocorreram pois o modelo previu \textbf{3, 0 e 8}. Provavelmente isso acontece pela semelhança visual dos dígitos \textbf{5, 3 e 8} e pelo desbalanceamento da classe \textbf{1} nos dados de treino, que foi a mais frequente (6.277 amostras).
-
-\textbf{Contagem das classes nos dados de treino:}
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
-        \hline
-        \textbf{Classe}   & 0    & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    \\
-        \hline
-        \textbf{Contagem} & 5560 & 6277 & 5610 & 5708 & 5529 & 5040 & 5480 & 5790 & 5468 & 5538 \\
-        \hline
-    \end{tabular}
-    \caption{Distribuição das classes no conjunto de treinamento}
-    \label{tab:class_distribution}
-\end{table}
+A classe mais confundida foi a \textbf{5} (28.8\% de erro). Nota-se pela matriz de confusão que parte considerável dos erros para esta classe ocorreram pois 
+o modelo previu \textbf{3}. Provavelmente isso acontece pela semelhança visual dos dígitos \textbf{5, 3 }.
