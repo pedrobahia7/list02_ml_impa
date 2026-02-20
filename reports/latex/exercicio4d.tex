@@ -1,85 +1,61 @@
+
 \section*{Parte (d)}
 
-\subsection*{(d-i)}
-Identifique o problema e experimente uma possível solução.
+\subsection*{(d)}
+Corrija o problema identificado no item anterior e demonstre que a rede agora consegue aprender.
 
 \vspace{0.5em}
-\noindent \textbf{Identificação do problema}: O principal problema identificado no item anterior é o \textit{vanishing gradient}, onde os gradientes da primeira camada (entrada $\rightarrow$ escondida) apresentam magnitudes extremamente pequenas, da ordem de $10^{-7}$.
+\noindent De fato, adicionar um termo na inicialização dos parâmetros permitiu o aprendizado e subsequente redução da função perda. Isso ocorre pois o valor pelo qual multiplicamos os pesos iniciais é $(2/D)^{1/2}$, sendo $D$ o tamanho da camada. Isso reduz a variância dos parâmetros e evita que valores muito grandes sejam passados ao softmax e tenham seu gradiente próximo a zero.
 
 \vspace{0.5em}
-\noindent \textbf{Solução implementada}: Inicialização Xavier/Glorot, que normaliza os pesos iniciais considerando o número de neurônios das camadas:
+\noindent A correção implementada:
 
-\begin{lstlisting}[language=Python]
-def inicializar_xavier(modelo):
-    """Aplica inicialização Xavier/Glorot aos pesos do modelo"""
-    for m in modelo.modules():
-        if isinstance(m, nn.Linear):
-            nn.init.xavier_uniform_(m.weight)
-            nn.init.zeros_(m.bias)
+\begin{verbatim}
+def init_scale(fan_in):
+    return (2/fan_in)**0.5
 
-# Modelo com inicialização Xavier
-modelo_xavier = ModeloSimples(X_train_tfidf.shape[1], 25, 4)
-inicializar_xavier(modelo_xavier)
-
-# Treinamento com coleta de gradientes
-criterio = nn.CrossEntropyLoss()
-otimizador_xavier = torch.optim.SGD(modelo_xavier.parameters(), lr=0.01)
-
-grad_fc1_weights_xavier = []
-grad_fc1_bias_xavier = []
-grad_fc2_weights_xavier = []
-grad_fc2_bias_xavier = []
-
-for epoch in range(100):
-    modelo_xavier.train()
-    otimizador_xavier.zero_grad()
-    
-    output, hidden = modelo_xavier(X_train_tensor)
-    loss = criterio(output, y_train_tensor)
-    loss.backward()
-    
-    # Coleta dos gradientes
-    grad_fc1_weights_xavier.append(modelo_xavier.fc1.weight.grad.norm().item())
-    grad_fc1_bias_xavier.append(modelo_xavier.fc1.bias.grad.norm().item())
-    grad_fc2_weights_xavier.append(modelo_xavier.fc2.weight.grad.norm().item())
-    grad_fc2_bias_xavier.append(modelo_xavier.fc2.bias.grad.norm().item())
-    
-    otimizador_xavier.step()
-\end{lstlisting}
-
-\subsection*{(d-ii)}
-Compare os gráficos antes e depois da solução.
+# Inicialização com normalização adequada
+A_K = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
+A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
+\end{verbatim}
 
 \vspace{0.5em}
-\noindent A comparação dos gráficos demonstra a eficácia da inicialização Xavier:
+\noindent As evidências do aprendizado bem-sucedido incluem:
+
+\begin{enumerate}
+    \item \textbf{Redução da perda}: O gráfico da função perda agora mostra uma tendência decrescente clara ao longo das épocas.
+
+    \item \textbf{Gradientes não-zero}: Os histogramas dos gradientes mostram distribuições mais amplas, indicando gradientes efetivos para o aprendizado.
+
+    \item \textbf{Distribuição melhorada do softmax}: A saída do softmax apresenta uma distribuição mais balanceada, não saturada.
+\end{enumerate}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{../figures/4/gradient_comparison.png}
-    \caption{Comparação da evolução dos gradientes: inicialização padrão vs. Xavier}
-    \label{fig:gradient_comparison}
+    \includegraphics[width=0.7\textwidth]{../figures/4/loss_with_init_fix.png}
+    \caption{Função perda com inicialização adequada - aprendizado bem-sucedido}
+    \label{fig:loss_with_init}
 \end{figure}
 
-\vspace{0.5em}
-\noindent \textbf{Melhorias observadas}:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_with_init_fix.png}
+    \caption{Distribuições dos pesos iniciais A\_K e A\_Q com inicialização adequada}
+    \label{fig:weights_with_init}
+\end{figure}
 
-\begin{enumerate}
-    \item \textbf{Magnitude dos gradientes}: Os gradientes da primeira camada aumentaram significativamente, passando de $\sim 10^{-7}$ para $\sim 10^{-3}$, um aumento de 4 ordens de magnitude.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_with_init_fix.png}
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_with_init_fix.png}
+    \caption{Histogramas dos gradientes de A\_K e A\_Q na primeira época (com inicialização adequada)}
+    \label{fig:gradients_with_init}
+\end{figure}
 
-    \item \textbf{Estabilidade do treinamento}: A inicialização Xavier proporciona gradientes mais estáveis ao longo das épocas, evitando a saturação prematura.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_with_init_fix.png}
+    \caption{Saída do softmax na primeira época (com inicialização adequada)}
+    \label{fig:softmax_with_init}
+\end{figure}
 
-    \item \textbf{Convergência melhorada}: Com gradientes mais balanceados, ambas as camadas podem aprender de forma mais efetiva.
-
-    \item \textbf{Relação entre camadas}: A diferença de magnitude entre os gradientes das diferentes camadas diminuiu, indicando um fluxo de gradiente mais equilibrado.
-\end{enumerate}
-
-\vspace{0.5em}
-\noindent \textbf{Análise da inicialização Xavier}: A inicialização Xavier funciona porque:
-\begin{itemize}
-    \item Normaliza os pesos iniciais com base no número de conexões de entrada e saída
-    \item Mantém a variância das ativações e gradientes equilibrada ao longo das camadas
-    \item Previne a saturação prematura das funções de ativação
-\end{itemize}
-
-\vspace{0.5em}
-\noindent Esta melhoria fundamental permite que a rede neural aprenda representações mais efetivas dos dados de entrada, preparando o terreno para a implementação bem-sucedida do mecanismo de atenção.

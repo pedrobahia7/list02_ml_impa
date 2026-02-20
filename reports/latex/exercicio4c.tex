@@ -1,72 +1,64 @@
+
 \section*{Parte (c)}
 
 \subsection*{(c)}
-Implemente uma rede neural simples com uma camada escondida. Adicione uma saída da ativação da camada escondida no \textit{forward}. Construa um gráfico que mostra a evolução do gradiente dos pesos da camada entrada $\rightarrow$ escondida e escondida $\rightarrow$ saída durante o treinamento.
+Note que a rede não está aprendendo. Explique qual é o problema e exponha evidências de que ele realmente está acontecendo.
 
 \vspace{0.5em}
-\noindent O código implementado para análise dos gradientes:
-
-\begin{lstlisting}[language=Python]
-class ModeloSimples(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim):
-        super(ModeloSimples, self).__init__()
-        self.fc1 = nn.Linear(input_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, output_dim)
-        
-    def forward(self, x):
-        hidden = torch.tanh(self.fc1(x))  # Ativação da camada escondida
-        output = self.fc2(hidden)
-        return output, hidden
-
-# Configuração do modelo
-modelo = ModeloSimples(X_train_tfidf.shape[1], 25, 4)
-criterio = nn.CrossEntropyLoss()
-otimizador = torch.optim.SGD(modelo.parameters(), lr=0.01)
-
-# Lista para armazenar gradientes
-grad_fc1_weights = []
-grad_fc1_bias = []
-grad_fc2_weights = []
-grad_fc2_bias = []
-
-# Treinamento com coleta de gradientes
-for epoch in range(100):
-    modelo.train()
-    otimizador.zero_grad()
-    
-    output, hidden = modelo(X_train_tensor)
-    loss = criterio(output, y_train_tensor)
-    loss.backward()
-    
-    # Coleta dos gradientes
-    grad_fc1_weights.append(modelo.fc1.weight.grad.norm().item())
-    grad_fc1_bias.append(modelo.fc1.bias.grad.norm().item())
-    grad_fc2_weights.append(modelo.fc2.weight.grad.norm().item())
-    grad_fc2_bias.append(modelo.fc2.bias.grad.norm().item())
-    
-    otimizador.step()
-\end{lstlisting}
+\noindent A inicialização incorreta da matriz de pesos é a causa do não aprendizado da rede. Como não normalizamos os pesos, sua variância era grande o suficiente para gerar valores com alta magnitude que, ao passar pelo softmax, resulta em valores próximos a 1 com gradientes próximos a 0.
 
 \vspace{0.5em}
-\noindent A análise dos gradientes revela um problema crítico:
+\noindent O problema pode ser observado através das evidências experimentais:
+
+\begin{enumerate}
+    \item \textbf{Perda constante}: O gráfico da função perda mostra que ela permanece praticamente constante ao longo das épocas, indicando ausência de aprendizado.
+
+    \item \textbf{Gradientes próximos a zero}: Os histogramas dos gradientes das matrizes $A_K$ e $A_Q$ mostram que a maioria dos gradientes está concentrada em torno de zero, evidenciando o problema do gradiente que desaparece.
+
+    \item \textbf{Saída do softmax saturada}: O histograma da saída do softmax mostra valores próximos a 1, indicando saturação da função.
+\end{enumerate}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{../figures/4/gradient_bad_init.png}
-    \caption{Evolução dos gradientes com inicialização padrão - observe a magnitude muito pequena dos gradientes da primeira camada}
-    \label{fig:gradient_bad}
+    \includegraphics[width=0.7\textwidth]{../figures/4/loss_no_init_fix.png}
+    \caption{Função perda sem inicialização adequada - sem aprendizado}
+    \label{fig:loss_no_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_no_init_fix.png}
+    \caption{Distribuições dos pesos iniciais A\_K e A\_Q}
+    \label{fig:weights_no_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_no_init_fix.png}
+    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_no_init_fix.png}
+    \caption{Histogramas dos gradientes de A\_K e A\_Q na primeira época (sem inicialização adequada)}
+    \label{fig:gradients_no_init}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_no_init_fix.png}
+    \caption{Saída do softmax na primeira época (sem inicialização adequada)}
+    \label{fig:softmax_no_init}
 \end{figure}
 
 \vspace{0.5em}
-\noindent \textbf{Problema observado}: O gradiente da camada entrada $\rightarrow$ escondida apresenta magnitude extremamente pequena (da ordem de $10^{-7}$), caracterizando o problema de \textit{vanishing gradients}.
+\noindent O c\'{o}digo que demonstra esse problema:
 
-\vspace{0.5em}
-\noindent \textbf{Causa do problema}:
-\begin{enumerate}
-    \item A função de ativação $\tanh$ tem derivada máxima de 1, mas tipicamente muito menor
-    \item A inicialização padrão dos pesos pode levar a saturação das ativações
-    \item O gradiente se propaga multiplicativamente, resultando em valores muito pequenos nas camadas anteriores
-\end{enumerate}
+\begin{verbatim}
+# Inicialização sem normalização adequada
+A_K = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
+A_Q = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
 
-\vspace{0.5em}
-\noindent Este problema impede o aprendizado efetivo da primeira camada, comprometendo a capacidade de extração de características relevantes dos dados de entrada.
+# Loop de treinamento
+for epoch in range(n_epochs):
+    # ... treinamento ...
+    att = softmax((K.T@Q)/(D**(1/2)))
+    loss = -cos(att,truth).mean()
+    loss.backward()
+\end{verbatim}

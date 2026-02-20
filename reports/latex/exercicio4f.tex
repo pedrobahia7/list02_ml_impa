@@ -1,3 +1,4 @@
+
 \section*{Parte (f)}
 
 \subsection*{(f)}
@@ -9,13 +10,13 @@ Usando o comando head\_view, visualize a similaridade par a par que a rede assoc
 \vspace{0.5em}
 \noindent O código que gera a visualização após o treinamento:
 
-\begin{lstlisting}[language=Python]
+\begin{verbatim}
 # Calculando a nova matriz de atenção com os pesos treinados
 att = (A_K.cpu().detach().numpy()@b.T ).T @ (A_Q.cpu().detach().numpy()@b.T )
 att = att.reshape(1,1,32,32)
 att = torch.tensor(att)
 head_view((att,), tokens)
-\end{lstlisting}
+\end{verbatim}
 
 \vspace{0.5em}
 \noindent A comparação entre as visualizações mostra:

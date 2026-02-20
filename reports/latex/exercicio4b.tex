@@ -1,111 +1,76 @@
+
 \section*{Parte (b)}
 
 \subsection*{(b-i)}
-Demonstre que a projeção ortogonal de um vetor $v$ no subespaço gerado por um vetor unitário $u$ é $\text{proj}_u(v) = (v \cdot u) u$.
+Sejam $u, v \in \mathbb{R}^d$, $P_u$ a projeção ortogonal sobre o espaço gerado por $u$. Mostre que $P_u(v) = \frac{\langle u, v \rangle}{\|u\|^2} u$.
 
 \vspace{0.5em}
-\noindent Seja $v$ um vetor qualquer e $u$ um vetor unitário ($||u|| = 1$). Para determinar a projeção ortogonal de $v$ no subespaço gerado por $u$, seguimos os seguintes passos:
-
-\vspace{0.5em}
-\noindent \textbf{Decomposição de $v$}: Podemos escrever $v$ como a soma de duas componentes:
+\noindent A projeção do vetor $v$ em $u$ tem duas componentes: direção e magnitude. A direção é dada pelo vetor de norma unitária na direção de $u$:
 \begin{equation*}
-    v = \text{proj}_u(v) + \text{componente perpendicular}
+    \hat{u} = \frac{u}{\|u\|}
 \end{equation*}
 
-\vspace{0.5em}
-\noindent \textbf{Forma da projeção}: Como a projeção pertence ao subespaço gerado por $u$, ela pode ser escrita na forma $\text{proj}_u(v) = \alpha u$ para algum escalar $\alpha$.
-
-\vspace{0.5em}
-\noindent \textbf{Condição de ortogonalidade}: A componente perpendicular $(v - \alpha u)$ deve ser ortogonal a $u$:
+\noindent A magnitude é dada pela componente de $v$, $v_u$, tal que $v - v_u = v_{\perp u}$ e $v_{\perp u}$ é ortogonal a $u$. $v_u$ é também a projeção escalar de $v$ em $u$, cuja definição é:
 \begin{equation*}
-    (v - \alpha u) \cdot u = 0
+    v_u = v \cdot \hat{u} = \frac{v \cdot u}{\|u\|}
 \end{equation*}
 
-\vspace{0.5em}
-\noindent \textbf{Cálculo do coeficiente}: Expandindo a condição de ortogonalidade:
+\noindent Assim:
 \begin{align*}
-    v \cdot u - \alpha (u \cdot u) & = 0                                       \\
-    v \cdot u - \alpha ||u||^2     & = 0                                       \\
-    v \cdot u - \alpha             & = 0 \quad \text{(pois } ||u|| = 1\text{)} \\
-    \alpha                         & = v \cdot u
+    P_u(v) & = v_u \cdot \hat{u}                             \\
+           & = \frac{v \cdot u}{\|u\|} \cdot \frac{u}{\|u\|} \\
+           & = \frac{\langle v, u \rangle}{\|u\|^2} \cdot u
 \end{align*}
-
-\vspace{0.5em}
-\noindent Portanto, $\text{proj}_u(v) = (v \cdot u) u$.
 
 \subsection*{(b-ii)}
-Demonstre que se aplicamos uma transformação linear $A$ em ambos os vetores $v$ e $u$, a projeção de $Av$ na direção de $Au$ é dada por $\text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au$. Demonstre que esta fórmula não é equivalente a aplicar a transformação $A$ à projeção original: $A(\text{proj}_u(v))$.
+Considere a definição de cosseno entre dois vetores $\cos(u, v) := \frac{\langle u, v \rangle}{\|u\|\|v\|}$. Use a fórmula do item (b-i) para relacionar essa definição de cosseno com o cosseno de um ângulo (construa um triângulo retângulo com $v$ e $P_u(v)$).
 
 \vspace{0.5em}
-\noindent \textbf{Parte 1}: Demonstrar a fórmula da projeção após transformação:
-
-\vspace{0.5em}
-\noindent Quando $u$ não é mais unitário após a transformação $A$, devemos usar a fórmula geral da projeção ortogonal:
+\noindent Partindo da definição:
 \begin{equation*}
-    \text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au
+    \cos(u, v) := \frac{\langle u, v \rangle}{\|u\|\|v\|}
 \end{equation*}
 
-\vspace{0.5em}
-\noindent Esta fórmula é derivada da mesma condição de ortogonalidade, mas considerando que $Au$ pode ter norma diferente de 1.
-
-\vspace{0.5em}
-\noindent \textbf{Parte 2}: Mostrar que $\text{proj}_{Au}(Av) \neq A(\text{proj}_u(v))$:
-
-\vspace{0.5em}
-\noindent Temos:
+\noindent Substituindo a relação encontrada em (b-i):
 \begin{align*}
-    A(\text{proj}_u(v)) & = A((v \cdot u) u) \\
-                        & = (v \cdot u) Au
+    \cos(u, v) & = P_u(v) \cdot \frac{\|u\|}{\|v\|} \cdot u          \\
+               & = \frac{P_u(v)}{\hat{u}\|v\|}                       \\
+               & = \frac{\|P_u(v)\|\hat{u}}{\|v\|\hat{u}}            \\
+               & = \frac{\|P_u(v)\|}{\|v\|}                          \\
+               & = \frac{\text{Cateto Adjacente}}{\text{Hipotenusa}}
 \end{align*}
-
-\vspace{0.5em}
-\noindent Compare com:
-\begin{equation*}
-    \text{proj}_{Au}(Av) = \frac{(Av) \cdot (Au)}{||Au||^2} Au
-\end{equation*}
-
-\vspace{0.5em}
-\noindent Para que fossem equivalentes, seria necessário:
-\begin{equation*}
-    (v \cdot u) = \frac{(Av) \cdot (Au)}{||Au||^2}
-\end{equation*}
-
-\vspace{0.5em}
-\noindent Em geral, esta igualdade não se verifica, especialmente quando $A$ não preserva o produto interno.
 
 \subsection*{(b-iii)}
-Mostre que $\cos(\theta)$ entre dois vetores $v$ e $u$ é preservado se e somente se $A$ preserva o produto interno, i.e., $(Av) \cdot (Au) = v \cdot u$.
+Mostre que, se $u_1, v_1, u_2, v_2 \in \mathbb{R}^d$ com $\|u_1\| = \|v_1\| = \|u_2\| = \|v_2\| = 1$, então $\cos(u_1, v_1) \geq \cos(u_2, v_2) \iff \|u_1 - v_1\| \leq \|u_2 - v_2\|$. Argumente que $\cos$ pode ser usado como uma medida de similaridade quando os vetores em consideração têm norma 1.
 
 \vspace{0.5em}
-\noindent \textbf{Definição do cosseno}: O cosseno do ângulo entre dois vetores é dado por:
-\begin{equation*}
-    \cos(\theta) = \frac{v \cdot u}{||v|| \cdot ||u||}
-\end{equation*}
-
-\vspace{0.5em}
-\noindent \textbf{Após a transformação}:
-\begin{equation*}
-    \cos(\theta') = \frac{(Av) \cdot (Au)}{||Av|| \cdot ||Au||}
-\end{equation*}
-
-\vspace{0.5em}
-\noindent \textbf{Condição para preservação}: Para que $\cos(\theta) = \cos(\theta')$, devemos ter:
-\begin{equation*}
-    \frac{v \cdot u}{||v|| \cdot ||u||} = \frac{(Av) \cdot (Au)}{||Av|| \cdot ||Au||}
-\end{equation*}
-
-\vspace{0.5em}
-\noindent \textbf{Se $A$ preserva o produto interno}: Se $(Av) \cdot (Au) = v \cdot u$ para todos os vetores $v$ e $u$, então:
+\noindent Assumindo:
 \begin{align*}
-    ||Av||^2 & = (Av) \cdot (Av) = v \cdot v = ||v||^2 \\
-    ||Au||^2 & = (Au) \cdot (Au) = u \cdot u = ||u||^2
+    \cos(u_1, v_1)           & \geq \cos(u_2, v_2)           \\
+    \langle u_1, v_1 \rangle & \geq \langle u_2, v_2 \rangle \\
+    P_{u_1}(v_1)             & \geq P_{u_2}(v_2)
 \end{align*}
 
-\vspace{0.5em}
-\noindent Portanto, $||Av|| = ||v||$ e $||Au|| = ||u||$, o que implica:
+\noindent Calculando a norma da diferença $\|u_1 - v_1\|$:
+\begin{align*}
+    \|u_1 - v_1\| & = \left[ (\|u_1\| + \|-v_1\|)^2 - 2\|P_{u_1}(v_1)\| \right]^{\frac{1}{2}} \\
+                  & = [1 + 1 - 2\|P_{u_1}(v_1)\|]^{\frac{1}{2}}                               \\
+                  & = [2 - 2\|P_{u_1}(v_1)\|]^{\frac{1}{2}}
+\end{align*}
+
+\noindent Analogamente para $\|u_2 - v_2\|$:
 \begin{equation*}
-    \cos(\theta') = \frac{v \cdot u}{||v|| \cdot ||u||} = \cos(\theta)
+    \|u_2 - v_2\| = [2 - 2\|P_{u_2}(v_2)\|]^{\frac{1}{2}}
 \end{equation*}
 
+\noindent Portanto, se $\|P_{u_1}(v_1)\| \geq \|P_{u_2}(v_2)\|$, então $\|u_1 - v_1\| \leq \|u_2 - v_2\|$, já que $[1 - \|P_{u_1}(v_1)\|] \leq [1 - \|P_{u_2}(v_2)\|]$. O sentido oposto da prova é feito de maneira análoga.
+
+\noindent Conclui-se que o cosseno pode ser usado como uma métrica de similaridade equivalente à norma da diferença (distância), com escala variando de $1$ (vetores com mesma direção e sentido) a $-1$ (vetores com sentidos opostos), sendo $0$ para vetores ortogonais.
+
+\subsection*{(b-iv)}
+Em vista do item anterior, aponte diferenças entre a noção de similaridade capturada por $\|u - v\|$ e $\cos(u, v)$. Em que casos seria mais vantajoso usar cada uma dessas noções de similaridade?
+
 \vspace{0.5em}
-\noindent \textbf{Reciprocamente}: Se o cosseno é preservado para todos os pares de vetores, então a transformação deve preservar tanto o produto interno quanto as normas, o que implica preservação do produto internal.
+\noindent A métrica da norma da diferença tem seus valores proporcionais à magnitude dos vetores avaliados. Enquanto isso, a métrica do cosseno pressupõe vetores unitários e é agnóstica à magnitude.
+
+\noindent Assim, em um caso em que apenas a direção importa, o cosseno é preferível. Em casos em que a magnitude também é relevante, a métrica da norma é preferível ao cosseno.
