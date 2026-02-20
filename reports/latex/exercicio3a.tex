@@ -126,8 +126,9 @@ for model in models:
 
 Os modelos com a melhor acurácia foram \textbf{SVM (98.2\%), Rede Neural (97.6\%) e kNN (96.9\%)}. O modelo mais rápido para treinar foi o \textbf{kNN (0.249s)},
 enquanto o mais rápido para testar foi a \textbf{Regressão Logística (0.038s)}. Isso indica que modelos mais simples como kNN são eficientes no treinamento,
-mas podem ser lentos na predição devido à busca pelos vizinhos mais próximos. Por outro lado, modelos como SVM alcançam alta acurácia, mas requerem tempo
-computacional significativo tanto para treinamento quanto para predição.
+mas podem ser lentos na predição devido à busca pelos vizinhos mais próximos. Por outro lado, modelos como SVM e NN alcançam alta acurácia, mas requerem tempo
+computacional significativo tanto para treinamento quanto para predição. De modo geral, modelos mais simples e rápidos como Naive Bayes e LDA apresentam acurácia menor,
+enquanto modelos mais complexos como SVM e Rede Neural alcançam melhor desempenho, porém com maior custo computacional.
 
 \textbf{Observações:}
 Para a convergência do modelo de QDA, foi necessário adicionar um parâmetro de regularização \texttt{reg\_param = 0.01}.
