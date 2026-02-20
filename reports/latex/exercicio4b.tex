@@ -2,73 +2,152 @@
 \section*{Parte (b)}
 
 \subsection*{(b-i)}
-Sejam $u, v \in \mathbb{R}^d$, $P_u$ a projeção ortogonal sobre o espaço gerado por $u$. Mostre que $P_u(v) = \frac{\langle u, v \rangle}{\|u\|^2} u$.
 
-\vspace{0.5em}
-\noindent A projeção do vetor $v$ em $u$ tem duas componentes: direção e magnitude. A direção é dada pelo vetor de norma unitária na direção de $u$:
-\begin{equation*}
-    \hat{u} = \frac{u}{\|u\|}
-\end{equation*}
+Pela definição de projeção ortogonal, temos que
+\[
+    P_u(v) = \alpha u.
+\]
 
-\noindent A magnitude é dada pela componente de $v$, $v_u$, tal que $v - v_u = v_{\perp u}$ e $v_{\perp u}$ é ortogonal a $u$. $v_u$ é também a projeção escalar de $v$ em $u$, cuja definição é:
-\begin{equation*}
-    v_u = v \cdot \hat{u} = \frac{v \cdot u}{\|u\|}
-\end{equation*}
+\[
+    v - P_u(v) \perp u,
+\]
+ou seja,
+\[
+    \langle v - \alpha u, u \rangle = 0.
+\]
 
-\noindent Assim:
-\begin{align*}
-    P_u(v) & = v_u \cdot \hat{u}                             \\
-           & = \frac{v \cdot u}{\|u\|} \cdot \frac{u}{\|u\|} \\
-           & = \frac{\langle v, u \rangle}{\|u\|^2} \cdot u
-\end{align*}
+Expandindo o produto interno,
+\[
+    \langle v, u \rangle - \alpha \langle u, u \rangle = 0.
+\]
+
+Como $\langle u, u \rangle = \|u\|^2$, segue que
+\[
+    \alpha = \frac{\langle v, u \rangle}{\|u\|^2}.
+\]
+
+Portanto,
+\[
+    P_u(v) = \frac{\langle u, v \rangle}{\|u\|^2}\, u.
+\]
 
 \subsection*{(b-ii)}
-Considere a definição de cosseno entre dois vetores $\cos(u, v) := \frac{\langle u, v \rangle}{\|u\|\|v\|}$. Use a fórmula do item (b-i) para relacionar essa definição de cosseno com o cosseno de um ângulo (construa um triângulo retângulo com $v$ e $P_u(v)$).
+Considere a definição
+\[
+    \cos(u,v) := \frac{\langle u, v \rangle}{\|u\|\,\|v\|}.
+\]
 
-\vspace{0.5em}
-\noindent Partindo da definição:
-\begin{equation*}
-    \cos(u, v) := \frac{\langle u, v \rangle}{\|u\|\|v\|}
-\end{equation*}
+Pelo item (b-i), a projeção de $v$ sobre $u$ é
+\[
+    P_u(v) = \frac{\langle u, v\rangle}{\|u\|^2}\, u.
+\]
 
-\noindent Substituindo a relação encontrada em (b-i):
-\begin{align*}
-    \cos(u, v) & = P_u(v) \cdot \frac{\|u\|}{\|v\|} \cdot u          \\
-               & = \frac{P_u(v)}{\hat{u}\|v\|}                       \\
-               & = \frac{\|P_u(v)\|\hat{u}}{\|v\|\hat{u}}            \\
-               & = \frac{\|P_u(v)\|}{\|v\|}                          \\
-               & = \frac{\text{Cateto Adjacente}}{\text{Hipotenusa}}
-\end{align*}
+Tomando norma em ambos os lados:
+\[
+    \|P_u(v)\|
+    = \left\|\frac{\langle u, v\rangle}{\|u\|^2} u \right\|
+    = \frac{|\langle u, v\rangle|}{\|u\|^2}\,\|u\|
+    = \frac{|\langle u, v\rangle|}{\|u\|}.
+\]
+
+Dividindo por $\|v\|$, obtemos:
+\[
+    \frac{\|P_u(v)\|}{\|v\|}
+    =
+    \frac{|\langle u, v\rangle|}{\|u\|\,\|v\|}.
+\]
+
+Logo,
+\[
+    \cos(u,v)
+    =
+    \frac{\langle u, v\rangle}{\|u\|\,\|v\|}
+    =
+    \frac{\|P_u(v)\|}{\|v\|}
+    \quad (\text{com sinal dado por } \langle u,v\rangle).
+\]
+
+Geometricamente,
+\[
+    \cos(u,v)
+    =
+    \frac{\text{cateto adjacente}}{\text{hipotenusa}},
+\]
+onde $\|P_u(v)\|$ é o cateto adjacente e $\|v\|$ é a hipotenusa.
 
 \subsection*{(b-iii)}
-Mostre que, se $u_1, v_1, u_2, v_2 \in \mathbb{R}^d$ com $\|u_1\| = \|v_1\| = \|u_2\| = \|v_2\| = 1$, então $\cos(u_1, v_1) \geq \cos(u_2, v_2) \iff \|u_1 - v_1\| \leq \|u_2 - v_2\|$. Argumente que $\cos$ pode ser usado como uma medida de similaridade quando os vetores em consideração têm norma 1.
 
-\vspace{0.5em}
-\noindent Assumindo:
-\begin{align*}
-    \cos(u_1, v_1)           & \geq \cos(u_2, v_2)           \\
-    \langle u_1, v_1 \rangle & \geq \langle u_2, v_2 \rangle \\
-    P_{u_1}(v_1)             & \geq P_{u_2}(v_2)
-\end{align*}
 
-\noindent Calculando a norma da diferença $\|u_1 - v_1\|$:
-\begin{align*}
-    \|u_1 - v_1\| & = \left[ (\|u_1\| + \|-v_1\|)^2 - 2\|P_{u_1}(v_1)\| \right]^{\frac{1}{2}} \\
-                  & = [1 + 1 - 2\|P_{u_1}(v_1)\|]^{\frac{1}{2}}                               \\
-                  & = [2 - 2\|P_{u_1}(v_1)\|]^{\frac{1}{2}}
-\end{align*}
+Como os vetores têm norma $1$, vale
+\[
+    \cos(u,v)=\langle u,v\rangle.
+\]
 
-\noindent Analogamente para $\|u_2 - v_2\|$:
-\begin{equation*}
-    \|u_2 - v_2\| = [2 - 2\|P_{u_2}(v_2)\|]^{\frac{1}{2}}
-\end{equation*}
+Calculando a norma ao quadrado da diferença:
+\[
+    \|u-v\|^2
+    =
+    \langle u-v,\,u-v\rangle.
+\]
 
-\noindent Portanto, se $\|P_{u_1}(v_1)\| \geq \|P_{u_2}(v_2)\|$, então $\|u_1 - v_1\| \leq \|u_2 - v_2\|$, já que $[1 - \|P_{u_1}(v_1)\|] \leq [1 - \|P_{u_2}(v_2)\|]$. O sentido oposto da prova é feito de maneira análoga.
+Expandindo,
+\[
+    \|u-v\|^2
+    =
+    \|u\|^2+\|v\|^2-2\langle u,v\rangle.
+\]
 
-\noindent Conclui-se que o cosseno pode ser usado como uma métrica de similaridade equivalente à norma da diferença (distância), com escala variando de $1$ (vetores com mesma direção e sentido) a $-1$ (vetores com sentidos opostos), sendo $0$ para vetores ortogonais.
+Como $\|u\|=\|v\|=1$, obtemos
+\[
+    \|u-v\|^2
+    =
+    1+1-2\langle u,v\rangle
+    =
+    2-2\cos(u,v).
+\]
+
+Portanto,
+\[
+    \|u-v\|^2 = 2-2\cos(u,v).
+\]
+
+Agora,
+\[
+    \cos(u_1,v_1)\geq \cos(u_2,v_2)
+\]
+
+\[
+    \iff
+    2-2\cos(u_1,v_1)\leq 2-2\cos(u_2,v_2)
+\]
+
+\[
+    \iff
+    \|u_1-v_1\|^2 \leq \|u_2-v_2\|^2
+\]
+
+\[
+    \iff
+    \|u_1-v_1\| \leq \|u_2-v_2\|.
+\]
+
+Logo,
+\[
+    \cos(u_1,v_1) \geq \cos(u_2,v_2)
+    \iff
+    \|u_1 - v_1\| \leq \|u_2 - v_2\|.
+\]
+
+
+Para vetores de norma $1$,
+\[
+    \|u-v\|^2 = 2-2\cos(u,v),
+\]
+ou seja, o cosseno é uma transformação monótona da distância euclidiana.
+Assim, quanto maior $\cos(u,v)$, menor a distância entre os vetores.
+Portanto, o cosseno pode ser usado como medida de similaridade para vetores normalizados.
 
 \subsection*{(b-iv)}
-Em vista do item anterior, aponte diferenças entre a noção de similaridade capturada por $\|u - v\|$ e $\cos(u, v)$. Em que casos seria mais vantajoso usar cada uma dessas noções de similaridade?
 
 \vspace{0.5em}
 \noindent A métrica da norma da diferença tem seus valores proporcionais à magnitude dos vetores avaliados. Enquanto isso, a métrica do cosseno pressupõe vetores unitários e é agnóstica à magnitude.
