@@ -1,0 +1,11 @@
+model BernoulliNB accuracy_train: 0.8318928571428571 accuracy_test: 0.8348571428571429 time_train: 0.7223806381225586 time_test: 0.16292166709899902
+model LinearDiscriminantAnalysis accuracy_train: 0.8726607142857142 accuracy_test: 0.8677142857142857 time_train: 10.77730679512024 time_test: 0.04538130760192871
+model QuadraticDiscriminantAnalysis accuracy_train: 0.9574107142857143 accuracy_test: 0.9428571428571428 time_train: 11.555708646774292 time_test: 5.3557844161987305
+model LogisticRegression accuracy_train: 0.9363392857142857 accuracy_test: 0.9202857142857143 time_train: 16.45805597305298 time_test: 0.09156227111816406
+model KNeighborsClassifier accuracy_train: 0.9786071428571429 accuracy_test: 0.969 time_train: 0.2755444049835205 time_test: 29.841750144958496
+model SVC accuracy_train: 1.0 accuracy_test: 0.9824285714285714 time_train: 218.9974136352539 time_test: 153.74006843566895
+model RandomForestClassifier accuracy_train: 1.0 accuracy_test: 0.9673571428571428 time_train: 79.13231706619263 time_test: 1.058891773223877
+model MLPClassifier accuracy_train: 0.9993035714285714 accuracy_test: 0.9755 time_train: 108.56493902206421 time_test: 0.07279014587402344
+
+Observação: para a convergência do modelo de QDA, foi necessário adicionar um parâmetro de regularização reg_param = 0.01.
+Além disso, os dados não foram normalizados, pois haviam sido escalonados com algoritmo semelhante ao MinMaxScaler.
