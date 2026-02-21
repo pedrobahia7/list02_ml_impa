@@ -1,16 +1,128 @@
 
-\subsection*{(e) Limite Superior da Perda em $t$}
-\addcontentsline{toc}{subsection}{(e) Limite Superior da Perda em $t$}
-Usando a substituição indicada $\tilde{\alpha} = \frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)$ na função de perda:
+\subsection*{(e)}
+\addcontentsline{toc}{subsection}{(e)}
+Sabemos inicialmente que
 \begin{equation*}
-    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sum_{i: \tilde{y}=F} w_i e^{-\frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)} + \sum_{i: \tilde{y} \neq F} w_i e^{\frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)}
+    L_t(\hat{\alpha}_t,\hat{\theta}_t)
+    =
+    2\sqrt{W_t^{=}W_t^{\neq}}
+    \le
+    L_t(\tilde{\alpha},\hat{\theta}),
 \end{equation*}
-Aplicando propriedades de logaritmo e rearranjando:
+e que
 \begin{equation*}
-    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sum w_i e^{-\log\left(\sqrt{\frac{1+2\gamma}{1-2\gamma}}\right)} + \sum w_i e^{\log\left(\sqrt{\frac{1+2\gamma}{1-2\gamma}}\right)}
-\end{equation*}
-Pelas manipulações algébricas associadas ao item (d), chega-se à conclusão final:
-\begin{equation*}
-    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sqrt{1 - 4\gamma^2} L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1})
+    L_t(\tilde{\alpha},\hat{\theta})
+    =
+    \sum_{i=1}^{n}
+    w_{it}\,
+    e^{-\tilde{y}_i\,\tilde{\alpha}\,F(x_i,\hat{\theta})}.
 \end{equation*}
 
+Separando a soma entre os índices tais que
+$\tilde{y}_i = F(x_i,\hat{\theta})$
+e aqueles em que
+$\tilde{y}_i \neq F(x_i,\hat{\theta})$,
+obtemos
+\begin{align}
+    L_t(\tilde{\alpha},\hat{\theta})
+     & =
+    W_t^{=}
+    \left(
+    \frac{1-2\gamma}{1+2\gamma}
+    \right)^{1/2}
+    +
+    W_t^{\neq}
+    \left(
+    \frac{1+2\gamma}{1-2\gamma}
+    \right)^{1/2}
+    \nonumber \\
+     & =
+    \sqrt{1-4\gamma^2}
+    \left(
+    \frac{W_t^{=}}{1+2\gamma}
+    +
+    \frac{W_t^{\neq}}{1-2\gamma}
+    \right).
+    \tag{I}
+\end{align}
+
+Do item anterior sabemos que
+\begin{equation*}
+    W_t^{\neq}
+    \le
+    \frac{1-2\gamma}{1+2\gamma}
+    \, W_t^{=}.
+\end{equation*}
+Dividindo ambos os lados por $1-2\gamma$, segue que
+\begin{equation*}
+    \frac{W_t^{\neq}}{1-2\gamma}
+    \le
+    \frac{W_t^{=}}{1+2\gamma}.
+\end{equation*}
+
+Logo,
+\begin{equation*}
+    \frac{W_t^{=}}{1+2\gamma}
+    +
+    \frac{W_t^{\neq}}{1-2\gamma}
+    \le
+    \frac{W_t^{=}}{1+2\gamma}
+    +
+    \frac{W_t^{=}}{1+2\gamma}
+    =
+    \frac{2W_t^{=}}{1+2\gamma}.
+\end{equation*}
+
+Como também vale
+\begin{equation*}
+    W_t^{=} + W_t^{\neq}
+    \le
+    \frac{2W_t^{=}}{1+2\gamma},
+\end{equation*}
+concluímos que
+\begin{equation*}
+    L_t(\hat{\alpha}_t,\hat{\theta}_t)
+    \le
+    \sqrt{1-4\gamma^2}
+    \left(
+    W_t^{=} + W_t^{\neq}
+    \right)
+    =
+    \sqrt{1-4\gamma^2}
+    L_{t-1}(\hat{\alpha}_{t-1},\hat{\theta}_{t-1}).
+\end{equation*}
+
+Suponha agora que inicializamos com
+$\hat{\alpha}_0 = 0$,
+de modo que
+\begin{equation*}
+    L_0(\hat{\alpha}_0,\hat{\theta}_0) = 1.
+\end{equation*}
+Usando a desigualdade elementar
+$1 + x \le e^x$,
+para todo $x \in \mathbb{R}$,
+temos
+\begin{equation*}
+    \sqrt{1-4\gamma^2}
+    =
+    (1-4\gamma^2)^{1/2}
+    \le
+    e^{-2\gamma^2}.
+\end{equation*}
+
+Iterando o limite obtido a cada passo,
+\begin{equation*}
+    L_t(\hat{\alpha}_t,\hat{\theta}_t)
+    \le
+    \left(
+    \sqrt{1-4\gamma^2}
+    \right)^t
+    \le
+    \left(
+    e^{-2\gamma^2}
+    \right)^t
+    =
+    e^{-2t\gamma^2}.
+\end{equation*}
+
+Portanto, a perda exponencial do AdaBoost no conjunto de treino decresce exponencialmente em função do número de iterações.

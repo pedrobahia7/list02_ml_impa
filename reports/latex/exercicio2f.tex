@@ -1,12 +1,26 @@
-\subsection*{(f) Decaimento Exponencial do Erro}
-\addcontentsline{toc}{subsection}{(f) Decaimento Exponencial do Erro}
-Assumindo a inicialização $\hat{\alpha}_0 = 0$, temos que $L_0(\hat{\alpha}_0, \hat{\theta}_0) = 1$.
-Aplicando a recursão do item (e) $t$ vezes sucessivas, obtemos $L_t \le (1 - 4\gamma^2)^{t/2}$.
-Usando a aproximação sugerida $1 + x \le e^x$ com $x = -4\gamma^2$:
+\subsection*{(f) }
+\addcontentsline{toc}{subsection}{(f) }
+Pelo item anterior, temos que
 \begin{equation*}
-    (1 - 4\gamma^2)^{t/2} \le (e^{-4\gamma^2})^{t/2}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sqrt{( 1 - 4 \gamma^2 )} L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1})
+\end{equation*}
+Extendendo para t = 0, temos que
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le ( 1 - 4 \gamma^2 )^{t/2} L_0(\hat{\alpha}_0, \hat{\theta}_0)
+\end{equation*}
+Como $L_0(\hat{\alpha}_0, \hat{\theta}_0) = 1$, temos que
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le ( 1 - 4 \gamma^2 )^{t/2}
+\end{equation*}
+
+Como $1+x \le e^x$, temos que
+\begin{equation*}
+    1-4\gamma^2 \le e^{-4\gamma^2}
+\end{equation*}
+
+\begin{equation*}
+    (1-4\gamma^2)^{t/2} \le e^{-2\gamma^2 t}
 \end{equation*}
 \begin{equation*}
-    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le e^{-2t\gamma^2}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le e^{-2 \gamma^2 t}
 \end{equation*}
-Isso prova que a perda exponencial do AdaBoost cai exponencialmente rápido com o tempo.
