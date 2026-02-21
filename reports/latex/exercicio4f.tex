@@ -1,37 +1,15 @@
 
-\section*{Parte (f)}
-
 \subsection*{(f)}
-Usando o comando head\_view, visualize a similaridade par a par que a rede associa à sequência de notícias correspondente a X\_test[:32], y\_test[:32]. Compare com a visualização realizada no item (a) e interprete o resultado.
 
-\vspace{0.5em}
-\noindent O resultado do presente head\_view apresenta relações entre amostras da mesma classe mais fortes que o head\_view do item (a), indicando o impacto do treinamento na definição da similaridade.
-
-\vspace{0.5em}
-\noindent O código que gera a visualização após o treinamento:
-
-\begin{verbatim}
-# Calculando a nova matriz de atenção com os pesos treinados
+\begin{lstlisting}[language=Python]
 att = (A_K.cpu().detach().numpy()@b.T ).T @ (A_Q.cpu().detach().numpy()@b.T )
 att = att.reshape(1,1,32,32)
 att = torch.tensor(att)
 head_view((att,), tokens)
-\end{verbatim}
+\end{lstlisting}
+
 
 \vspace{0.5em}
-\noindent A comparação entre as visualizações mostra:
-
-\begin{enumerate}
-    \item \textbf{Visualização inicial (item a)}: Utiliza similaridade TF-IDF pura ($b \cdot b^T$), onde a similaridade é baseada apenas na sobreposição de termos ponderados.
-
-    \item \textbf{Visualização após treinamento (item f)}: Utiliza as matrizes aprendidas $A_K$ e $A_Q$, calculando $(A_K \cdot b^T)^T \cdot (A_Q \cdot b^T)$.
-
-    \item \textbf{Melhoria observada}: A rede aprendeu a criar representações que aumentam a similaridade entre artigos da mesma categoria, demonstrando que o mecanismo de atenção pode aprender padrões mais sofisticados que a simples sobreposição de termos.
-\end{enumerate}
-
-\vspace{0.5em}
-\noindent Esta comparação demonstra a eficácia do treinamento da rede neural em aprender representações mais discriminativas para a similaridade entre textos, superando métricas baseadas puramente em estatísticas de termos como TF-IDF.
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{../figures/4/attention_begin.png}
@@ -39,3 +17,9 @@ head_view((att,), tokens)
     \caption{Comparação entre a visualização de atenção inicial (TF-IDF) e após o treinamento (atenção aprendida)}
     \label{fig:attention_comparison}
 \end{figure}
+
+\vspace{0.5em}
+\noindent O resultado do presente head\_view apresenta relações entre amostras da mesma classe mais fortes que o head\_view do item (a), indicando o impacto do treinamento na definição da similaridade.
+\noindent A comparação entre as visualizações mostra que a rede aprendeu a criar representações que aumentam a similaridade entre artigos da mesma categoria, demonstrando que o mecanismo de atenção pode aprender padrões mais sofisticados que a simples sobreposição de termos.
+\noindent Isso implica em uma matriz mais esparsa e focada, onde as relações entre amostras da mesma classe são ressaltadas.
+

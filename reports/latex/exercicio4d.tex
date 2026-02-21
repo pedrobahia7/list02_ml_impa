@@ -1,8 +1,4 @@
-
-\section*{Parte (d)}
-
 \subsection*{(d)}
-Corrija o problema identificado no item anterior e demonstre que a rede agora consegue aprender.
 
 \vspace{0.5em}
 \noindent De fato, adicionar um termo na inicialização dos parâmetros permitiu o aprendizado e subsequente redução da função perda. Isso ocorre pois o valor pelo qual multiplicamos os pesos iniciais é $(2/D)^{1/2}$, sendo $D$ o tamanho da camada. Isso reduz a variância dos parâmetros e evita que valores muito grandes sejam passados ao softmax e tenham seu gradiente próximo a zero.
@@ -10,14 +6,6 @@ Corrija o problema identificado no item anterior e demonstre que a rede agora co
 \vspace{0.5em}
 \noindent A correção implementada:
 
-\begin{verbatim}
-def init_scale(fan_in):
-    return (2/fan_in)**0.5
-
-# Inicialização com normalização adequada
-A_K = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
-A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
-\end{verbatim}
 
 \vspace{0.5em}
 \noindent As evidências do aprendizado bem-sucedido incluem:
@@ -30,21 +18,21 @@ A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
     \item \textbf{Distribuição melhorada do softmax}: A saída do softmax apresenta uma distribuição mais balanceada, não saturada.
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{../figures/4/loss_with_init_fix.png}
     \caption{Função perda com inicialização adequada - aprendizado bem-sucedido}
     \label{fig:loss_with_init}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_with_init_fix.png}
     \caption{Distribuições dos pesos iniciais A\_K e A\_Q com inicialização adequada}
     \label{fig:weights_with_init}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_with_init_fix.png}
     \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_with_init_fix.png}
@@ -52,10 +40,68 @@ A_Q = torch.randn((D,D)).cuda() * init_scale(D)  # COM *init_scale(D)
     \label{fig:gradients_with_init}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_with_init_fix.png}
     \caption{Saída do softmax na primeira época (com inicialização adequada)}
     \label{fig:softmax_with_init}
 \end{figure}
 
+
+\begin{lstlisting}[language=Python]
+    
+torch.manual_seed(0)
+n_epochs = 5
+lr = 1e-5
+sequence_length = 32
+
+def init_scale(fan_in):
+  return (2/fan_in)**.5
+
+D = X_train.shape[1]
+
+A_K = torch.randn((D,D)).cuda()*init_scale(D)
+A_Q = torch.randn((D,D)).cuda()*init_scale(D)
+
+A_K_original = A_K.clone()
+A_Q_original = A_Q.clone()
+
+A_K.requires_grad = True
+A_Q.requires_grad = True
+
+optimizer = torch.optim.Adam([A_K, A_Q], lr = lr)
+softmax = torch.nn.Softmax(dim=0)
+cos = torch.nn.CosineSimilarity(dim=0)
+att_list = []
+losses = []
+A_K_grad_sum = torch.zeros_like(A_K)  # stays on GPU
+A_Q_grad_sum = torch.zeros_like(A_Q)  # stays on GPU
+n_batches = 0
+
+for epoch in range(n_epochs):
+  permutation = torch.randperm(X_train.shape[0])
+  for i in range(0,X_train.shape[0], sequence_length):
+    optimizer.zero_grad()
+    indices = permutation[i:i+sequence_length]
+    if len(indices)!=sequence_length:
+      continue
+
+    seq_X, seq_Y = X_train[indices], y_train[indices]
+    K = A_K@(seq_X.T)
+    Q = A_Q@(seq_X.T)
+    att = softmax((K.T@Q)/(D**(1/2)))
+    truth = ((seq_Y-seq_Y.reshape(-1,1))==0).type(torch.float32)
+    loss = -cos(att,truth).mean()
+    loss.backward()
+    if epoch==0:
+      A_K_grad_sum += A_K.grad     # accumulate
+      A_Q_grad_sum += A_Q.grad     # accumulate
+      n_batches += 1
+      att_list.append(att.detach().cpu().flatten().numpy())
+
+    optimizer.step()
+    losses.append(loss.detach().cpu())
+
+A_K_grad_mean = (A_K_grad_sum / n_batches).detach().cpu().flatten().numpy()
+A_Q_grad_mean = (A_Q_grad_sum / n_batches).detach().cpu().flatten().numpy()
+\end{lstlisting}

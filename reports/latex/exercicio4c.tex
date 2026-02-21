@@ -1,9 +1,4 @@
-
-\section*{Parte (c)}
-
 \subsection*{(c)}
-Note que a rede não está aprendendo. Explique qual é o problema e exponha evidências de que ele realmente está acontecendo.
-
 \vspace{0.5em}
 \noindent A inicialização incorreta da matriz de pesos é a causa do não aprendizado da rede. Como não normalizamos os pesos, sua variância era grande o suficiente para gerar valores com alta magnitude que, ao passar pelo softmax, resulta em valores próximos a 1 com gradientes próximos a 0.
 
@@ -11,54 +6,110 @@ Note que a rede não está aprendendo. Explique qual é o problema e exponha evi
 \noindent O problema pode ser observado através das evidências experimentais:
 
 \begin{enumerate}
-    \item \textbf{Perda constante}: O gráfico da função perda mostra que ela permanece praticamente constante ao longo das épocas, indicando ausência de aprendizado.
+  \item \textbf{Perda constante}: O gráfico da função perda mostra que ela permanece praticamente constante ao longo das épocas, indicando ausência de aprendizado.
 
-    \item \textbf{Gradientes próximos a zero}: Os histogramas dos gradientes das matrizes $A_K$ e $A_Q$ mostram que a maioria dos gradientes está concentrada em torno de zero, evidenciando o problema do gradiente que desaparece.
+  \item \textbf{Gradientes próximos a zero}: Os histogramas dos gradientes das matrizes $A_K$ e $A_Q$ mostram que a maioria dos gradientes está concentrada em torno de zero, evidenciando o problema do gradiente que desaparece.
 
-    \item \textbf{Saída do softmax saturada}: O histograma da saída do softmax mostra valores próximos a 1, indicando saturação da função.
+  \item \textbf{Saída do softmax saturada}: O histograma da saída do softmax mostra valores próximos a 1, indicando saturação da função.
 \end{enumerate}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{../figures/4/loss_no_init_fix.png}
-    \caption{Função perda sem inicialização adequada - sem aprendizado}
-    \label{fig:loss_no_init}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{../figures/4/loss_no_init_fix.png}
+  \caption{Função perda sem inicialização adequada - sem aprendizado}
+  \label{fig:loss_no_init}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_no_init_fix.png}
-    \caption{Distribuições dos pesos iniciais A\_K e A\_Q}
-    \label{fig:weights_no_init}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{../figures/4/weight_distributions_no_init_fix.png}
+  \caption{Distribuições dos pesos iniciais A\_K e A\_Q (sem inicialização adequada)}
+  \label{fig:weights_no_init}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_no_init_fix.png}
-    \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_no_init_fix.png}
-    \caption{Histogramas dos gradientes de A\_K e A\_Q na primeira época (sem inicialização adequada)}
-    \label{fig:gradients_no_init}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_K_no_init_fix.png}
+  \includegraphics[width=0.45\textwidth]{../figures/4/gradient_histogram_A_Q_no_init_fix.png}
+  \caption{Histogramas dos gradientes de A\_K e A\_Q na primeira época (sem inicialização adequada)}
+  \label{fig:gradients_no_init}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_no_init_fix.png}
-    \caption{Saída do softmax na primeira época (sem inicialização adequada)}
-    \label{fig:softmax_no_init}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{../figures/4/softmax_output_no_init_fix.png}
+  \caption{Saída do softmax na primeira época (sem inicialização adequada)}
+  \label{fig:softmax_no_init}
 \end{figure}
 
 \vspace{0.5em}
-\noindent O c\'{o}digo que demonstra esse problema:
 
-\begin{verbatim}
-# Inicialização sem normalização adequada
-A_K = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
-A_Q = torch.randn((D,D)).cuda()  # SEM *init_scale(D)
+\begin{lstlisting}[language=Python]
+X_train = torch.tensor(X_train.toarray(), dtype=torch.float32).cuda()
+X_train = (X_train-X_train.mean())/X_train.std()
+y_train = torch.tensor(y_train, dtype=torch.float32).cuda()
+X_test = torch.tensor(X_test.toarray(), dtype=torch.float32).cuda()
+X_test = (X_test-X_test.mean())/X_test.std()
+y_test = torch.tensor(y_test, dtype=torch.float32).cuda()
 
-# Loop de treinamento
+
+# %%
+
+torch.manual_seed(0)
+n_epochs = 5
+lr = 1e-5
+sequence_length = 32
+
+def init_scale(fan_in):
+  return (2/fan_in)**.5
+
+D = X_train.shape[1]
+
+A_K = torch.randn((D,D)).cuda()#*init_scale(D)
+A_Q = torch.randn((D,D)).cuda()#*init_scale(D)
+
+A_K_original = A_K.clone()
+A_Q_original = A_Q.clone()
+
+A_K.requires_grad = True
+A_Q.requires_grad = True
+
+optimizer = torch.optim.Adam([A_K, A_Q], lr = lr)
+softmax = torch.nn.Softmax(dim=0)
+cos = torch.nn.CosineSimilarity(dim=0)
+
+losses = []
+att_list = []
+A_K_grad_sum = torch.zeros_like(A_K)  # stays on GPU
+A_Q_grad_sum = torch.zeros_like(A_Q)  # stays on GPU
+n_batches = 0
+
 for epoch in range(n_epochs):
-    # ... treinamento ...
+  permutation = torch.randperm(X_train.shape[0])
+  for i in range(0,X_train.shape[0], sequence_length):
+    optimizer.zero_grad()
+    indices = permutation[i:i+sequence_length]
+    if len(indices)!=sequence_length:
+      continue
+
+    seq_X, seq_Y = X_train[indices], y_train[indices]
+    K = A_K@(seq_X.T)
+    Q = A_Q@(seq_X.T)
     att = softmax((K.T@Q)/(D**(1/2)))
+    truth = ((seq_Y-seq_Y.reshape(-1,1))==0).type(torch.float32)
     loss = -cos(att,truth).mean()
     loss.backward()
-\end{verbatim}
+    if epoch==0:
+      A_K_grad_sum += A_K.grad     # accumulate
+      A_Q_grad_sum += A_Q.grad     # accumulate
+      n_batches += 1
+      att_list.append(att.detach().cpu().flatten().numpy())
+
+
+    optimizer.step()
+    losses.append(loss.detach().cpu())
+
+A_K_grad_mean = (A_K_grad_sum / n_batches).detach().cpu().flatten().numpy()
+A_Q_grad_mean = (A_Q_grad_sum / n_batches).detach().cpu().flatten().numpy()
+
+\end{lstlisting}
