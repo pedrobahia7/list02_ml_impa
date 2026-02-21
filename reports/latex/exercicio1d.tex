@@ -5,6 +5,4 @@ $$ \hat{y}^* = (x^*)^T \hat{\beta} $$
 
 Substituindo $ \hat{\beta} = X^T \alpha $ encontrado no item (c):
 $$ \hat{y}^* = (x^*)^T X^T \alpha $$
-
-Sabendo que $ X^T = [x_1, x_2, \dots, x_n] $, o produto pode ser expresso como uma combinação linear de produtos internos:
-$$ \hat{y}^* = \sum_{i=1}^n \alpha_i (x^*)^T x_i $$
+$$ \hat{y}^* = (x^*)^T X^T \left( \lambda I + XX^T \right)^{-1} Y $$
