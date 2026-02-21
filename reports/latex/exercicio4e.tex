@@ -1,43 +1,40 @@
-
-\subsection*{(e-i)}
-
 Seja
 \[
-    Z = K[X]^T Q[X] = \sum_{i=1}^D K_i[X]\, Q_i[X].
+  Z = K[X]^T Q[X] = \sum_{i=1}^D K_i[X]\, Q_i[X].
 \]
 
 Suponha que:
 \[
-    \mathbb{E}[K_i]=\mathbb{E}[Q_i]=0,
-    \qquad
-    \mathbb{V}(K_i)=\mathbb{V}(Q_i)=\sigma^2,
+  \mathbb{E}[K_i]=\mathbb{E}[Q_i]=0,
+  \qquad
+  \mathbb{V}(K_i)=\mathbb{V}(Q_i)=\sigma^2,
 \]
 e que todas as variáveis sejam independentes.
 
 \paragraph{Esperança}
 
 \[
-    \mathbb{E}[Z]
-    =
-    \mathbb{E}\!\left[\sum_{i=1}^D K_i Q_i\right]
-    =
-    \sum_{i=1}^D \mathbb{E}[K_i Q_i].
+  \mathbb{E}[Z]
+  =
+  \mathbb{E}\!\left[\sum_{i=1}^D K_i Q_i\right]
+  =
+  \sum_{i=1}^D \mathbb{E}[K_i Q_i].
 \]
 
 Como $K_i$ e $Q_i$ são independentes,
 
 \[
-    \mathbb{E}[K_i Q_i]
-    =
-    \mathbb{E}[K_i]\mathbb{E}[Q_i]
-    =
-    0.
+  \mathbb{E}[K_i Q_i]
+  =
+  \mathbb{E}[K_i]\mathbb{E}[Q_i]
+  =
+  0.
 \]
 
 Logo,
 
 \[
-    \mathbb{E}[Z]=0.
+  \mathbb{E}[Z]=0.
 \]
 
 \paragraph{Variância}
@@ -45,75 +42,74 @@ Logo,
 Como $\mathbb{E}[Z]=0$,
 
 \[
-    \mathbb{V}(Z)=\mathbb{E}[Z^2].
+  \mathbb{V}(Z)=\mathbb{E}[Z^2].
 \]
 
 Agora,
 \[
-    Z^2
-    =
-    \left(\sum_{i=1}^D K_i Q_i\right)^2
-    =
-    \sum_{i=1}^D K_i^2 Q_i^2
-    +
-    \sum_{i\neq j} K_i Q_i K_j Q_j.
+  Z^2
+  =
+  \left(\sum_{i=1}^D K_i Q_i\right)^2
+  =
+  \sum_{i=1}^D K_i^2 Q_i^2
+  +
+  \sum_{i\neq j} K_i Q_i K_j Q_j.
 \]
 
 Tomando esperança,
 
 \[
-    \mathbb{E}[Z^2]
-    =
-    \sum_{i=1}^D \mathbb{E}[K_i^2 Q_i^2]
-    +
-    \sum_{i\neq j} \mathbb{E}[K_i Q_i K_j Q_j].
+  \mathbb{E}[Z^2]
+  =
+  \sum_{i=1}^D \mathbb{E}[K_i^2 Q_i^2]
+  +
+  \sum_{i\neq j} \mathbb{E}[K_i Q_i K_j Q_j].
 \]
 
 Para $i\neq j$, pela independência,
 
 \[
-    \mathbb{E}[K_i Q_i K_j Q_j]
-    =
-    \mathbb{E}[K_i]\mathbb{E}[Q_i]\mathbb{E}[K_j]\mathbb{E}[Q_j]
-    =
-    0.
+  \mathbb{E}[K_i Q_i K_j Q_j]
+  =
+  \mathbb{E}[K_i]\mathbb{E}[Q_i]\mathbb{E}[K_j]\mathbb{E}[Q_j]
+  =
+  0.
 \]
 
 Logo restam apenas os termos diagonais:
 
 \[
-    \mathbb{E}[Z^2]
-    =
-    \sum_{i=1}^D
-    \mathbb{E}[K_i^2]\mathbb{E}[Q_i^2].
+  \mathbb{E}[Z^2]
+  =
+  \sum_{i=1}^D
+  \mathbb{E}[K_i^2]\mathbb{E}[Q_i^2].
 \]
 
 Como
 \[
-    \mathbb{E}[K_i^2]=\sigma^2,
-    \qquad
-    \mathbb{E}[Q_i^2]=\sigma^2,
+  \mathbb{E}[K_i^2]=\sigma^2,
+  \qquad
+  \mathbb{E}[Q_i^2]=\sigma^2,
 \]
 
 temos
 
 \[
-    \mathbb{V}(Z)
-    =
-    \sum_{i=1}^D \sigma^2 \sigma^2
-    =
-    D\sigma^4.
+  \mathbb{V}(Z)
+  =
+  \sum_{i=1}^D \sigma^2 \sigma^2
+  =
+  D\sigma^4.
 \]
 
 Portanto, para obter variância unitária, devemos normalizar por
 
 \[
-    \frac{1}{\sqrt{D}\,\sigma^2}.
+  \frac{1}{\sqrt{D}\,\sigma^2}.
 \]
 
 No caso usual em que $\sigma^2=1$, basta dividir por $\sqrt{D}$. Mesmo que
 $\sigma^2\neq 1$, a normalização por $\sqrt{D}$ ainda é necessária
 para evitar que a variância cresça com $D$.
-\subsection*{(e-ii)}
 \vspace{0.5em}
 \noindent Não foi necessário assumir distribuição gaussiana das variáveis, apenas independência e mesmos valores de média e variância. Os mesmos resultados seriam obtidos caso as variáveis não seguissem a mesma distribuição, mas mantivessem a independência e os valores de média e variância constantes.

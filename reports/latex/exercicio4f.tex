@@ -1,6 +1,3 @@
-
-\subsection*{(f)}
-
 \begin{lstlisting}[language=Python]
 att = (A_K.cpu().detach().numpy()@b.T ).T @ (A_Q.cpu().detach().numpy()@b.T )
 att = att.reshape(1,1,32,32)

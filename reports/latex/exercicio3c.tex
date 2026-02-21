@@ -1,5 +1,3 @@
-\subsubsection*{(c) Análise da matriz de confusão do Naive Bayes}
-
 \begin{lstlisting}[language=Python]
 cm = confusion_matrix(y_true=y_test, y_pred=yhats[0])
 mask = 1 - np.identity(cm.shape[0])
@@ -41,5 +39,5 @@ value, count = np.unique(y_train, return_counts=True)
     \label{tab:error_rates}
 \end{table}
 
-A classe mais confundida foi a \textbf{5} (28.8\% de erro). Nota-se pela matriz de confusão que parte considerável dos erros para esta classe ocorreram pois 
+A classe mais confundida foi a \textbf{5} (28.8\% de erro). Nota-se pela matriz de confusão que parte considerável dos erros para esta classe ocorreram pois
 o modelo previu \textbf{3}. Provavelmente isso acontece pela semelhança visual dos dígitos \textbf{5, 3 }.
