@@ -28,7 +28,11 @@ Substituindo a relação na equação de perda, obtemos o valor mínimo:
     L_t(\hat{\alpha}_t, \hat{\theta}_t) = \min_{\tilde{\alpha}} L_t(\tilde{\alpha}, \hat{\theta}_t) = 2\sqrt{W_t^{=} \cdot W_t^{\neq}}
 \end{equation*}
 
-Para $L_{t-1}$, avaliando a perda acumulada (equivalente a avaliar $\alpha = 0$ antes da atualização), temos a soma dos pesos:
-\begin{equation*}
-    L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1}) = \sum W_i = W_t^{=} + W_t^{\neq}
-\end{equation*}
+Para $L_{t-1}$, temos que:
+A expressão para $L_{t-1}$ pode ser organizada da seguinte forma:
+\begin{align*}
+    L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1})
+     & = \sum_{i=1}^{n} w_{i,t-1} \, e^{-\tilde{y}_i \hat{\alpha}_{t-1} F(x_i; \hat{\theta}_{t-1})} \\
+     & = \sum_{i=1}^{n} w_{i,t}                                                                     \\
+     & = W_t^{=} + W_t^{\neq}
+\end{align*}
