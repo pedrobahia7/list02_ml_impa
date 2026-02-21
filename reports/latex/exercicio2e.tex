@@ -1,0 +1,16 @@
+
+\subsection*{(e) Limite Superior da Perda em $t$}
+\addcontentsline{toc}{subsection}{(e) Limite Superior da Perda em $t$}
+Usando a substituição indicada $\tilde{\alpha} = \frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)$ na função de perda:
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sum_{i: \tilde{y}=F} w_i e^{-\frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)} + \sum_{i: \tilde{y} \neq F} w_i e^{\frac{1}{2} \log\left(\frac{1+2\gamma}{1-2\gamma}\right)}
+\end{equation*}
+Aplicando propriedades de logaritmo e rearranjando:
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sum w_i e^{-\log\left(\sqrt{\frac{1+2\gamma}{1-2\gamma}}\right)} + \sum w_i e^{\log\left(\sqrt{\frac{1+2\gamma}{1-2\gamma}}\right)}
+\end{equation*}
+Pelas manipulações algébricas associadas ao item (d), chega-se à conclusão final:
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le \sqrt{1 - 4\gamma^2} L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1})
+\end{equation*}
+

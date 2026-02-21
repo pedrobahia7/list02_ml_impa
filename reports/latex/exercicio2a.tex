@@ -1,0 +1,34 @@
+\subsection*{(a) Minimização da Perda e Relações de $L_t$}
+\addcontentsline{toc}{subsection}{(a) Minimização da Perda e Relações de $L_t$}
+A função de perda no passo $t$ pode ser dividida entre as amostras classificadas corretamente e incorretamente:
+\begin{equation*}
+    L_t(\tilde{\alpha}, \tilde{\theta}) = \sum_{i: \tilde{y}_i = F} w_{it} e^{-\tilde{\alpha}} + \sum_{i: \tilde{y}_i \neq F} w_{it} e^{\tilde{\alpha}}
+\end{equation*}
+Podemos simplificar utilizando as definições dadas para os pesos:
+\begin{equation*}
+    L_t(\tilde{\alpha}, \tilde{\theta}) = e^{-\tilde{\alpha}}W_t^{=} + e^{\tilde{\alpha}}W_t^{\neq}
+\end{equation*}
+Para encontrar o mínimo, derivamos em relação a $\alpha$ e igualamos a zero:
+\begin{equation*}
+    \frac{dL}{d\alpha} = -e^{-\alpha} W_t^{=} + e^{\alpha} W_t^{\neq} = 0
+\end{equation*}
+Elevando ao quadrado ambos os lados e somando o termo 4$W_t^{=}W_t^{\neq}$ para manter a igualdade, obtemos:
+\begin{equation*}
+    (e^{\alpha} W_t^{\neq})^2 + 2W_t^{=}W_t^{\neq} + (e^{-\alpha}W_t^{=})^2 = 4W_t^{=}W_t^{\neq}
+\end{equation*}
+\begin{equation*}
+    (e^{\alpha} W_t^{\neq} + e^{-\alpha} W_t^{=})^2 = 4W_t^{=}W_t^{\neq}
+\end{equation*}
+\begin{equation*}
+    e^{\alpha} W_t^{\neq} + e^{-\alpha} W_t^{=} = 2\sqrt{W_t^{=}W_t^{\neq}}
+\end{equation*}
+
+Substituindo a relação na equação de perda, obtemos o valor mínimo:
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) = \min_{\tilde{\alpha}} L_t(\tilde{\alpha}, \hat{\theta}_t) = 2\sqrt{W_t^{=} \cdot W_t^{\neq}}
+\end{equation*}
+
+Para $L_{t-1}$, avaliando a perda acumulada (equivalente a avaliar $\alpha = 0$ antes da atualização), temos a soma dos pesos:
+\begin{equation*}
+    L_{t-1}(\hat{\alpha}_{t-1}, \hat{\theta}_{t-1}) = \sum W_i = W_t^{=} + W_t^{\neq}
+\end{equation*}

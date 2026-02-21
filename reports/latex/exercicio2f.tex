@@ -1,0 +1,12 @@
+\subsection*{(f) Decaimento Exponencial do Erro}
+\addcontentsline{toc}{subsection}{(f) Decaimento Exponencial do Erro}
+Assumindo a inicialização $\hat{\alpha}_0 = 0$, temos que $L_0(\hat{\alpha}_0, \hat{\theta}_0) = 1$.
+Aplicando a recursão do item (e) $t$ vezes sucessivas, obtemos $L_t \le (1 - 4\gamma^2)^{t/2}$.
+Usando a aproximação sugerida $1 + x \le e^x$ com $x = -4\gamma^2$:
+\begin{equation*}
+    (1 - 4\gamma^2)^{t/2} \le (e^{-4\gamma^2})^{t/2}
+\end{equation*}
+\begin{equation*}
+    L_t(\hat{\alpha}_t, \hat{\theta}_t) \le e^{-2t\gamma^2}
+\end{equation*}
+Isso prova que a perda exponencial do AdaBoost cai exponencialmente rápido com o tempo.

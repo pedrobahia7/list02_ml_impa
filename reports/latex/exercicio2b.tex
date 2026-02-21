@@ -1,0 +1,13 @@
+
+\subsection*{(b) Limite Superior para o Erro com Algoritmo Fraco}
+\addcontentsline{toc}{subsection}{(b) Limite Superior para o Erro com Algoritmo Fraco}
+Pela definição de algoritmo fraco, existirá um $\hat{\theta}$ tal que, para qualquer distribuição de probabilidade, o erro é menor ou igual a $\frac{1}{2} - \gamma$.
+Definindo a probabilidade $p_i = \frac{w_i}{\sum w_i}$ e sabendo que a soma dos pesos é $\sum w_i = W_t^{=} + W_t^{\neq}$, temos:
+\begin{equation*}
+    \sum_{i} \frac{w_i}{W_t^{=} + W_t^{\neq}} \mathbb{I}_{[F(x_i, \hat{\theta}) \neq \tilde{y}_i]} \le \frac{1}{2} - \gamma
+\end{equation*}
+O que nos leva à expressão:
+\begin{equation*}
+    \frac{1}{W_t^{=} + W_t^{\neq}} \sum_{\tilde{y}_i \neq F(x_i, \hat{\theta})} w_i \le \frac{1}{2} - \gamma
+\end{equation*}
+

@@ -1,0 +1,18 @@
+
+\subsection*{(g) Acurácia Perfeita e Iterações Mínimas ($T^*$)}
+\addcontentsline{toc}{subsection}{(g) Acurácia Perfeita e Iterações Mínimas ($T^*$)}
+Se a perda é estritamente menor que $1/n$, então $\frac{1}{n} \sum e^{-\tilde{y}_i \hat{f}_t(x_i)} < \frac{1}{n}$.
+Isso exige que todos os termos exponenciais sejam menores que 1 individualmente, o que só ocorre se as previsões $\hat{f}_t(x_i)$ tiverem os mesmos sinais das respostas corretas $\tilde{y}_i$ para todo $i$. Portanto, a acurácia de treino torna-se igual a um.
+
+Para encontrar a iteração $T^*$ a partir da qual isso acontece, utilizamos a cota provada na letra (f):
+\begin{equation*}
+    e^{-2T\gamma^2} < \frac{1}{n}
+\end{equation*}
+Aplicando logaritmo natural em ambos os lados:
+\begin{equation*}
+    -2T\gamma^2 < \log\left(\frac{1}{n}\right) \implies -2T\gamma^2 < -\log(n)
+\end{equation*}
+Isolando $T$:
+\begin{equation*}
+    T^* > \frac{\log(n)}{2\gamma^2}
+\end{equation*}
