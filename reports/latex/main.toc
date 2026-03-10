@@ -1,0 +1,39 @@
+\babel@toc {portuguese}{}\relax 
+\contentsline {section}{Exercício 1}{3}{}%
+\contentsline {subsection}{Exercício 1a}{3}{}%
+\contentsline {subsection}{Exercício 1b}{4}{}%
+\contentsline {subsection}{Exercício 1c}{5}{}%
+\contentsline {subsection}{Exercício 1d}{6}{}%
+\contentsline {subsection}{Exercício 1e}{7}{}%
+\contentsline {subsection}{Exercício 1f}{8}{}%
+\contentsline {subsection}{Exercício 1g}{9}{}%
+\contentsline {section}{Exercício 2}{15}{}%
+\contentsline {subsection}{Exercício 2a}{15}{}%
+\contentsline {subsection}{Exercício 2b}{16}{}%
+\contentsline {subsection}{Exercício 2c}{17}{}%
+\contentsline {subsection}{Exercício 2d}{18}{}%
+\contentsline {subsection}{Exercício 2e}{19}{}%
+\contentsline {subsection}{Exercício 2f}{20}{}%
+\contentsline {subsection}{Exercício 2g}{21}{}%
+\contentsline {subsection}{Exercício 2h}{22}{}%
+\contentsline {section}{Exercício 3}{24}{}%
+\contentsline {subsection}{Exercício 3a}{24}{}%
+\contentsline {subsection}{Exercício 3b}{28}{}%
+\contentsline {subsection}{Exercício 3c}{34}{}%
+\contentsline {section}{Exercício 4}{36}{}%
+\contentsline {subsection}{Exercício 4a}{36}{}%
+\contentsline {subsection}{Exercício 4b}{38}{}%
+\contentsline {subsection}{Exercício 4c}{41}{}%
+\contentsline {subsection}{Exercício 4d}{45}{}%
+\contentsline {subsection}{Exercício 4e}{49}{}%
+\contentsline {paragraph}{Esperança}{49}{}%
+\contentsline {paragraph}{Variância}{49}{}%
+\contentsline {subsection}{Exercício 4f}{51}{}%
+\contentsline {subsection}{Exercício 4g}{53}{}%
+\contentsline {section}{Exercício 5}{54}{}%
+\contentsline {subsection}{Exercício 5a}{54}{}%
+\contentsline {subsection}{Exercício 5b}{57}{}%
+\contentsline {subsection}{Exercício 5c}{58}{}%
+\contentsline {subsection}{Exercício 5d}{60}{}%
+\contentsline {subsection}{Exercício 5e}{62}{}%
+\contentsline {subsection}{Exercício 5f}{63}{}%
